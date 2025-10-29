@@ -88,7 +88,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malawi Projects Map</title>
+    <title>NCA-CDA Projects Map</title>
 </head>
 <body>
     
@@ -296,9 +296,9 @@
         var legend = L.control({ position: 'bottomright' });
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML += '<h4>Project Status</h4>';
-            div.innerHTML += '<i style="background: #3388ff;"></i> Approved ESMPs<br>';
-            div.innerHTML += '<i style="background: #ff0000;"></i> Approved ESIA Reports<br>';
+            div.innerHTML += '<h4>Project Layers</h4>';
+            div.innerHTML += '<i style="background: #3388ff;"></i> Malawi Districts<br>';
+            div.innerHTML += '<i style="background: #ff0000;"></i> NCD-CDA Points<br>';
             return div;
         };
         legend.addTo(map);
