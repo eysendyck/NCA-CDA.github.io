@@ -13,8 +13,10 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
           crossorigin=""/>
 
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="malawigeo.js"></script>
     
     <style>
         body {
@@ -65,6 +67,62 @@
         
         .navbar-toggler:focus {
             box-shadow: none;
+        }
+        
+        /* Search Bar Styles - Positioned below zoom controls */
+        .search-container {
+            position: absolute;
+            top: 150px; /* Position below zoom controls */
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 300px;
+            max-width: 90%;
+        }
+        
+        .search-input-container {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 5px;
+        }
+        
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-clear {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 0 5px;
         }
         
         /* Map container takes full height minus navbar */
@@ -173,6 +231,12 @@
                 height: calc(100vh - 60px);
             }
             
+            .search-container {
+                top: 120px; /* Adjusted for mobile */
+                left: 10px;
+                width: calc(100% - 20px);
+            }
+            
             #coords-display {
                 left: 10px;
                 bottom: 10px;
@@ -205,7 +269,7 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="LOGO.png" alt="NCA-CDA Logo">
+                <img src="https://via.placeholder.com/60x60/007bff/ffffff?text=NCA" alt="NCA-CDA Logo">
                 <h4>NCA-CDA PROJECT MAP</h4>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -214,7 +278,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
+                        <a class="nav-link active" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.html">About Us</a>
@@ -223,6 +287,18 @@
             </div>
         </div>
     </nav>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-input-container">
+            <i class="fas fa-search text-muted"></i>
+            <input type="text" class="search-input" placeholder="Search projects, districts, villages...">
+            <button class="search-clear" id="clearSearch">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+    </div>
 
     <!-- Main Content -->
     <div id="main-content">
@@ -244,75 +320,7 @@
             crossorigin=""></script>
     
     <script>
-        var map = L.map('map').setView([-13.254308, 34.301525], 7);
-
-        // Basemaps
-        var osm = L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=6D8m37RZjolxUW7EC05Q', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Tiles &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-        }).addTo(map);
-
-        var satelliteWithLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, and the GIS User Community'
-        });
-
-        var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            maxZoom: 17,
-            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-        });
-
-        var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
-        });
-
-        // Malawi Boundary GeoJSON
-        var malawiBoundaryStyle = {
-            "color": "#000000",
-            "weight": 2,
-            "opacity": 0.65,
-            "fillOpacity": 0
-        };
-        L.geoJSON(malawigeo, { style: malawiBoundaryStyle }).addTo(map);
-
-        // Custom Icons
-        var redIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
-        });
-
-        var blueIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
-        });
-
-        // Layer Groups
-        var esmpLayerGroup = L.layerGroup();
-        var esiaLayerGroup = L.layerGroup();
-        esmpLayerGroup.addTo(map);
-        esiaLayerGroup.addTo(map);
-        
-        // Other Map Controls
-        var coordsDiv = document.getElementById('coords-display');
-        map.on('mousemove', function(e) {
-            var lat = e.latlng.lat.toFixed(4);
-            var lng = e.latlng.lng.toFixed(4);
-            coordsDiv.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
-        });
-        
-        var baseLayers = {
-            "Street Map": osm,
-            "Satellite": satelliteWithLabels,
-            "Topographic Map": OpenTopoMap,
-            "Light Map": positron
-        };
-        
-        var overlayLayers = {
-            "NCA-CDA Locational Data": esmpLayerGroup,
-            "Area of Interest (AOI)": esiaLayerGroup
-        };
-        
-        L.control.layers(baseLayers, overlayLayers).addTo(map);
-
-        // Your GeoJSON data embedded directly
+        // Sample GeoJSON data - in a real application, this would come from an API or file
         const geoJsonData = {
             "type": "FeatureCollection",
             "name": "Intervetion",
@@ -530,94 +538,233 @@
             ]
         };
 
-        // Initialize the map
-        function initMap() {
-            // Color coding for different organizations
-            function getColor(organization) {
-                switch(organization) {
-                    case 'fyf': return '#1f77b4';
-                    case 'cadecom': return '#ff7f0e';
-                    case 'tlc': return '#2ca02c';
-                    case 'ag_care': return '#d62728';
-                    default: return '#9467bd';
-                }
+
+        // Initialize map
+        var map = L.map('map').setView([-13.254308, 34.301525], 7);
+
+        // Basemaps
+        var osm = L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=6D8m37RZjolxUW7EC05Q', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Tiles &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+        }).addTo(map);
+
+        var satelliteWithLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, and the GIS User Community'
+        });
+
+        var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+
+        var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
+        });
+
+        // Layer Groups
+        var esmpLayerGroup = L.layerGroup();
+        var esiaLayerGroup = L.layerGroup();
+        esmpLayerGroup.addTo(map);
+        esiaLayerGroup.addTo(map);
+        
+        // Other Map Controls
+        var coordsDiv = document.getElementById('coords-display');
+        map.on('mousemove', function(e) {
+            var lat = e.latlng.lat.toFixed(4);
+            var lng = e.latlng.lng.toFixed(4);
+            coordsDiv.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
+        });
+        
+        var baseLayers = {
+            "Street Map": osm,
+            "Satellite": satelliteWithLabels,
+            "Topographic Map": OpenTopoMap,
+            "Light Map": positron
+        };
+        
+        var overlayLayers = {
+            "NCA-CDA Locational Data": esmpLayerGroup,
+            "Area of Interest (AOI)": esiaLayerGroup
+        };
+        
+        L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+        // Color coding for different organizations
+        function getColor(organization) {
+            switch(organization) {
+                case 'fyf': return '#1f77b4';
+                case 'cadecom': return '#ff7f0e';
+                case 'tlc': return '#2ca02c';
+                case 'ag_care': return '#d62728';
+                default: return '#9467bd';
             }
-
-            // Create a legend
-            var legend = L.control({position: 'bottomright'});
-
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'info legend'),
-                    organizations = ['fyf', 'cadecom', 'tlc', 'ag_care'],
-                    labels = [];
-
-                // Add title
-                div.innerHTML = '<h4>Organizations</h4>';
-
-                // Loop through organizations and generate a label with a colored square for each
-                for (var i = 0; i < organizations.length; i++) {
-                    div.innerHTML +=
-                        '<i style="background:' + getColor(organizations[i]) + '"></i> ' +
-                        organizations[i] + '<br>';
-                }
-
-                return div;
-            };
-
-            legend.addTo(map);
-
-            // Add the GeoJSON data to the map
-            var interventions = L.geoJSON(geoJsonData, {
-                pointToLayer: function(feature, latlng) {
-                    // Create a circle marker for each intervention
-                    return L.circleMarker(latlng, {
-                        radius: 8,
-                        fillColor: getColor(feature.properties.Organisati),
-                        color: "#000",
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    });
-                },
-                onEachFeature: function(feature, layer) {
-                    // Create popup content
-                    var props = feature.properties;
-                    var popupContent = `
-                        <div>
-                            <h3>${props.TRANSFORM_}</h3>
-                            <p><strong>Organization:</strong> ${props.Organisati}</p>
-                            <p><strong>District:</strong> ${props.District}</p>
-                            <p><strong>Village:</strong> ${props.Village}</p>
-                            <p><strong>GVH:</strong> ${props.GVH}</p>
-                            <p><strong>Name:</strong> ${props.Name}</p>
-                            <p><strong>Submission Date:</strong> ${props._submissio}</p>
-                            ${props.Altitude ? `<p><strong>Altitude:</strong> ${props.Altitude} m</p>` : ''}
-                            ${props._Intervent ? `<p><strong>Intervention Value:</strong> ${props._Intervent}</p>` : ''}
-                        </div>
-                    `;
-                    
-                    // Bind popup to layer
-                    layer.bindPopup(popupContent);
-                }
-            }).addTo(map);
-
-            // Fit map to show all interventions
-            map.fitBounds(interventions.getBounds());
-            
-            // Hide loading message
-            document.getElementById('loading').style.display = 'none';
         }
 
-        // Initialize the map when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initMap();
+        // Create a legend
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                organizations = ['fyf', 'cadecom', 'tlc', 'ag_care'],
+                labels = [];
+
+            // Add title
+            div.innerHTML = '<h4>Organizations</h4>';
+
+            // Loop through organizations and generate a label with a colored square for each
+            for (var i = 0; i < organizations.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(organizations[i]) + '"></i> ' +
+                    organizations[i] + '<br>';
+            }
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        // Add the GeoJSON data to the map
+        var interventions = L.geoJSON(geoJsonData, {
+            pointToLayer: function(feature, latlng) {
+                // Create a circle marker for each intervention
+                return L.circleMarker(latlng, {
+                    radius: 8,
+                    fillColor: getColor(feature.properties.Organisati),
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+            },
+            onEachFeature: function(feature, layer) {
+                // Create popup content
+                var props = feature.properties;
+                var popupContent = `
+                    <div>
+                        <h3>${props.TRANSFORM_}</h3>
+                        <p><strong>Organization:</strong> ${props.Organisati}</p>
+                        <p><strong>District:</strong> ${props.District}</p>
+                        <p><strong>Village:</strong> ${props.Village}</p>
+                        <p><strong>GVH:</strong> ${props.GVH}</p>
+                        <p><strong>Name:</strong> ${props.Name}</p>
+                        <p><strong>Submission Date:</strong> ${props._submissio}</p>
+                        ${props.Altitude ? `<p><strong>Altitude:</strong> ${props.Altitude} m</p>` : ''}
+                        ${props._Intervent ? `<p><strong>Intervention Value:</strong> ${props._Intervent}</p>` : ''}
+                    </div>
+                `;
+                
+                // Bind popup to layer
+                layer.bindPopup(popupContent);
+                
+                // Store the layer reference for search functionality
+                layer.feature = feature;
+            }
+        }).addTo(map);
+
+        // Fit map to show all interventions
+        map.fitBounds(interventions.getBounds());
+        
+        // Hide loading message
+        document.getElementById('loading').style.display = 'none';
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchResults = document.getElementById('searchResults');
+        const clearSearch = document.getElementById('clearSearch');
+        
+        // Function to perform search
+        function performSearch(query) {
+            const results = [];
+            const lowerQuery = query.toLowerCase();
             
-            // Adjust map height on window resize
-            window.addEventListener('resize', function() {
-                setTimeout(function() {
-                    map.invalidateSize();
-                }, 100);
+            // Search through all features
+            geoJsonData.features.forEach(feature => {
+                const props = feature.properties;
+                const searchableText = [
+                    props.TRANSFORM_,
+                    props.Organisati,
+                    props.District,
+                    props.Village,
+                    props.GVH,
+                    props.Name,
+                    props._Intervent
+                ].join(' ').toLowerCase();
+                
+                if (searchableText.includes(lowerQuery)) {
+                    results.push(feature);
+                }
             });
+            
+            return results;
+        }
+        
+        // Function to display search results
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+            } else {
+                results.forEach(feature => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <strong>${feature.properties.TRANSFORM_}</strong><br>
+                        <small>${feature.properties.District} - ${feature.properties.Village}</small>
+                    `;
+                    
+                    item.addEventListener('click', function() {
+                        // Zoom to the feature
+                        map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 12);
+                        
+                        // Open popup for the feature
+                        interventions.eachLayer(function(layer) {
+                            if (layer.feature === feature) {
+                                layer.openPopup();
+                            }
+                        });
+                        
+                        // Clear search and hide results
+                        searchInput.value = '';
+                        searchResults.style.display = 'none';
+                    });
+                    
+                    searchResults.appendChild(item);
+                });
+            }
+            
+            searchResults.style.display = 'block';
+        }
+        
+        // Event listeners for search
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (query.length > 0) {
+                const results = performSearch(query);
+                displaySearchResults(results);
+            } else {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            searchResults.style.display = 'none';
+            searchInput.focus();
+        });
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Adjust map height on window resize
+        window.addEventListener('resize', function() {
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
         });
     </script>
 </body>
