@@ -616,6 +616,7 @@
                 case 'cadecom': return '#ff7f0e';
                 case 'tlc': return '#2ca02c';
                 case 'ag_care': return '#d62728';
+                case 'tapp' : return '#8a00c2';
                 default: return '#9467bd';
             }
         }
@@ -625,7 +626,7 @@
 
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend'),
-                organizations = ['fyf', 'cadecom', 'tlc', 'ag_care'],
+                organizations = ['fyf', 'cadecom', 'tlc', 'ag_care', 'tapp'],
                 labels = [];
 
             // Add title
