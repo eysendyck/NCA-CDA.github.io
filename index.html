@@ -561,6 +561,26 @@
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
         });
 
+        // Malawi Boundary GeoJSON
+        var malawiBoundaryStyle = {
+            "color": "#000000",
+            "weight": 2,
+            "opacity": 0.65,
+            "fillOpacity": 0
+        };
+        L.geoJSON(malawigeo, { style: malawiBoundaryStyle }).addTo(map);
+
+        // Custom Icons
+        var redIcon = L.icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
+        });
+
+        var blueIcon = L.icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
+        });
+
         // Layer Groups
         var esmpLayerGroup = L.layerGroup();
         var esiaLayerGroup = L.layerGroup();
