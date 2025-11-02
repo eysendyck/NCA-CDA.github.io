@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCA-CDA Project Map</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
@@ -21,17 +18,27 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            overflow-x: hidden;
         }
-        
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 300px;
+            right: 0;
+        }
         #sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
             background-color: #f8f9fa;
+            z-index: 1000;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
             overflow-y: auto;
             font-family: Arial, sans-serif;
             font-size: 14px;
-            height: 100vh;
         }
         
         #sidebar h4, #sidebar h5 {
@@ -57,7 +64,7 @@
         #coords-display {
             position: absolute;
             bottom: 20px;
-            left: 20px;
+            left: 310px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 10px;
@@ -66,7 +73,6 @@
             font-size: 14px;
             color: #333;
         }
-        
         .info {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
@@ -75,17 +81,14 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
-        
         .info h4 {
             margin: 0 0 5px;
             color: #777;
         }
-        
         .legend {
             line-height: 18px;
             color: #555;
         }
-        
         .legend i {
             width: 18px;
             height: 18px;
@@ -94,7 +97,6 @@
             opacity: 0.7;
             border-radius: 50%;
         }
-        
         .loading {
             position: absolute;
             top: 50%;
@@ -106,105 +108,37 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
             z-index: 1000;
         }
-        
-        /* Mobile-specific styles */
-        @media (max-width: 768px) {
-            #sidebar {
-                height: auto;
-                max-height: 40vh;
-                padding: 10px;
-            }
-            
-            #map {
-                height: 60vh;
-            }
-            
-            #coords-display {
-                left: 10px;
-                bottom: 10px;
-                font-size: 12px;
-            }
-            
-            .header-container h4 {
-                font-size: 16px;
-            }
-            
-            .legend {
-                font-size: 12px;
-            }
-            
-            .legend i {
-                width: 14px;
-                height: 14px;
-            }
-        }
-        
-        /* Collapsible sidebar for mobile */
-        .sidebar-toggle {
-            display: none;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1002;
-            background: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar-toggle {
-                display: block;
-            }
-            
-            .sidebar-hidden {
-                display: none;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Bootstrap container for responsive layout -->
-    <div class="container-fluid p-0">
-        <div class="row g-0">
-            <!-- Sidebar column -->
-            <div class="col-lg-3 col-md-4" id="sidebar">
-                <div class="header-container">
-                    <img src="LOGO.png" alt="NCA-CDA Logo" style="width: 80px;">
-                    <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
-                </div>
-                
-                <h5>BACKGROUND</h5>
-                <div id="esmp-summary"></div>
-                <canvas id="esmpPieChart" style="margin-top: 20px;"></canvas>
-            </div>
-            
-            <!-- Map column -->
-            <div class="col-lg-9 col-md-8">
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    ☰
-                </button>
-                <div id="map" style="height: 100vh;"></div>
-                <div id="coords-display"></div>
-            </div>
+
+    <div id="sidebar">
+        <div class="header-container">
+            <img src="LOGO.png" alt="NCA-CDA Logo" style="width: 80px;">
+            <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
         </div>
+        
+        <h5>BACKGROUND</h5>
+        <div id="esmp-summary"></div>
+        <canvas id="esmpPieChart" style="margin-top: 20px;"></canvas>
     </div>
+    <div id="coords-display"></div>
+    <div id="map"></div>
     
     <div id="loading" class="loading">Loading map data...</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
     
     <script>
-        var map = L.map('map').setView([-13.254308, 34.301525], 7);
 
-        // Basemaps
+
+        var map = L.map('map').setView([-13.254308, 34.301525], 7);
+        //var map = L.map('map').setView([-11.5, 33.8], 8);
+
+             // Basemaps
         var osm = L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=6D8m37RZjolxUW7EC05Q', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Tiles &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
         }).addTo(map);
@@ -247,32 +181,30 @@
         var esiaLayerGroup = L.layerGroup();
         esmpLayerGroup.addTo(map);
         esiaLayerGroup.addTo(map);
-        
-        // Other Map Controls
+            // Other Map Controls
         var coordsDiv = document.getElementById('coords-display');
         map.on('mousemove', function(e) {
             var lat = e.latlng.lat.toFixed(4);
             var lng = e.latlng.lng.toFixed(4);
             coordsDiv.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
         });
-        
         var baseLayers = {
             "Street Map": osm,
             "Satellite": satelliteWithLabels,
             "Topographic Map": OpenTopoMap,
             "Light Map": positron
         };
-        
         var overlayLayers = {
             "NCA-CDA Locational Data": esmpLayerGroup,
             "Area of Interest (AOI)": esiaLayerGroup
         };
-        
         L.control.layers(baseLayers, overlayLayers).addTo(map);
+
 
         // Dashboard with Summary and Charts
         var esmpSummaryText = `Sustainable Food Systems for Rural Agriculture Transformation and Resilience (TRANSFORM) Programme is targeting 150,000 agriculture-dependent rural households from Dowa, Mchinji, Kasungu, Mzimba and Rumphi. The programme has been implemented since 2020 (inception) and is phasing out in 2025. The goal of the programme is to contribute to sustainable agricultural transformation that will result in significant growth of the agricultural sector in Malawi. This is being achieved by transforming the food systems in the indicated districts. The programme integrates and consolidates diverse skills, experiences, and lessons from past initiatives of the Development Fund of Norway (DF), Norwegian Church Aid (NCA) and the Norwegian University for Life Sciences (NMBU), based on a long history of implementing successful climate change resilience, research and innovation, agricultural and natural resource programmes in Malawi and within the region. The central theme, therefore, involves a new paradigm shift that blends climate change resilience through climate-adapted practices, development of sustainable food systems, action research and market-led value chain approach to produce greater and more sustainable impacts on the lives, livelihoods, and resilience of smallholder farmers in Malawi.`;
         document.getElementById('esmp-summary').innerHTML = esmpSummaryText;
+
 
         // Your GeoJSON data embedded directly
         const geoJsonData = {
@@ -494,6 +426,17 @@
 
         // Initialize the map
         function initMap() {
+            // Map Initialization
+            //var map = L.map('map').setView([-13.254308, 34.301525], 7);
+            //var map = L.map('map').setView([-11.5, 33.8], 8);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+
+
             // Color coding for different organizations
             function getColor(organization) {
                 switch(organization) {
@@ -573,18 +516,6 @@
         // Initialize the map when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
-            
-            // Toggle sidebar on mobile
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-            });
-            
-            // Adjust map height on window resize
-            window.addEventListener('resize', function() {
-                setTimeout(function() {
-                    map.invalidateSize();
-                }, 100);
-            });
         });
     </script>
 </body>
