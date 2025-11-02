@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCA-CDA Project Map</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
@@ -18,32 +21,73 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-        }
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 300px;
-            right: 0;
-        }
-        #sidebar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 300px;
-            height: 100%;
-            background-color: #f8f9fa;
-            z-index: 1000;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
+            overflow-x: hidden;
         }
         
-        #sidebar h4, #sidebar h5 {
-            margin-top: 15px;
-            margin-bottom: 5px;
+        #map-container {
+            position: relative;
+            height: 100vh;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        #sidebar {
+            background-color: #f8f9fa;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-collapsed {
+            transform: translateX(-100%);
+        }
+        
+        #sidebar-toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1002;
+            background: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            #sidebar-toggle {
+                display: block;
+            }
+            
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 85%;
+                max-width: 300px;
+                z-index: 1001;
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1000;
+                display: none;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
         }
         
         .header-container {
@@ -55,6 +99,7 @@
         .header-container h4 {
             margin: 0; 
             margin-left: 10px; 
+            font-size: 1.1rem;
         }
 
         .leaflet-control {
@@ -64,7 +109,7 @@
         #coords-display {
             position: absolute;
             bottom: 20px;
-            left: 310px;
+            left: 20px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 10px;
@@ -73,6 +118,7 @@
             font-size: 14px;
             color: #333;
         }
+        
         .info {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
@@ -81,14 +127,17 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
+        
         .info h4 {
             margin: 0 0 5px;
             color: #777;
         }
+        
         .legend {
             line-height: 18px;
             color: #555;
         }
+        
         .legend i {
             width: 18px;
             height: 18px;
@@ -97,6 +146,7 @@
             opacity: 0.7;
             border-radius: 50%;
         }
+        
         .loading {
             position: absolute;
             top: 50%;
@@ -108,103 +158,167 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
             z-index: 1000;
         }
+        
+        /* Responsive text */
+        .sidebar-text {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar-text {
+                font-size: 0.85rem;
+            }
+            
+            .header-container h4 {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Improve map controls for mobile */
+        .leaflet-control-layers {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <div class="header-container">
-            <img src="LOGO.png" alt="NCA-CDA Logo" style="width: 80px;">
-            <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar Column -->
+            <div class="col-md-4 col-lg-3" id="sidebar-column">
+                <div id="sidebar">
+                    <div class="header-container">
+                        <img src="LOGO.png" alt="NCA-CDA Logo" style="width: 60px;">
+                        <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
+                    </div>
+                    
+                    <h5>BACKGROUND</h5>
+                    <div id="esmp-summary" class="sidebar-text"></div>
+                    <canvas id="esmpPieChart" style="margin-top: 20px; max-width: 100%;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Map Column -->
+            <div class="col-md-8 col-lg-9" id="map-container">
+                <button id="sidebar-toggle" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </button>
+                
+                <div id="coords-display"></div>
+                <div id="map"></div>
+                
+                <div id="loading" class="loading">Loading map data...</div>
+            </div>
         </div>
-        
-        <h5>BACKGROUND</h5>
-        <div id="esmp-summary"></div>
-        <canvas id="esmpPieChart" style="margin-top: 20px;"></canvas>
     </div>
-    <div id="coords-display"></div>
-    <div id="map"></div>
     
-    <div id="loading" class="loading">Loading map data...</div>
+    <!-- Mobile overlay for sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
     
     <script>
+        // Your existing JavaScript code remains the same
+        // Just adding the sidebar toggle functionality
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            // Toggle sidebar on mobile
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-collapsed');
+                sidebarOverlay.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking on overlay
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.add('sidebar-collapsed');
+                sidebarOverlay.classList.remove('active');
+            });
+            
+            // Your existing map initialization code
+            var map = L.map('map').setView([-13.254308, 34.301525], 7);
 
+            // Basemaps
+            var osm = L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=6D8m37RZjolxUW7EC05Q', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Tiles &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+            }).addTo(map);
 
-        var map = L.map('map').setView([-13.254308, 34.301525], 7);
-        //var map = L.map('map').setView([-11.5, 33.8], 8);
+            var satelliteWithLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, and the GIS User Community'
+            });
 
-             // Basemaps
-        var osm = L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=6D8m37RZjolxUW7EC05Q', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Tiles &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-        }).addTo(map);
+            var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                maxZoom: 17,
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+            });
 
-        var satelliteWithLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, and the GIS User Community'
-        });
+            var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
+            });
 
-        var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            maxZoom: 17,
-            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-        });
+            // Malawi Boundary GeoJSON
+            var malawiBoundaryStyle = {
+                "color": "#000000",
+                "weight": 2,
+                "opacity": 0.65,
+                "fillOpacity": 0
+            };
+            L.geoJSON(malawigeo, { style: malawiBoundaryStyle }).addTo(map);
 
-        var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
-        });
+            // Custom Icons
+            var redIcon = L.icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
+            });
 
-        // Malawi Boundary GeoJSON
-        var malawiBoundaryStyle = {
-            "color": "#000000",
-            "weight": 2,
-            "opacity": 0.65,
-            "fillOpacity": 0
-        };
-        L.geoJSON(malawigeo, { style: malawiBoundaryStyle }).addTo(map);
+            var blueIcon = L.icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
+            });
 
-        // Custom Icons
-        var redIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
-        });
-
-        var blueIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
-        });
-
-        // Layer Groups
-        var esmpLayerGroup = L.layerGroup();
-        var esiaLayerGroup = L.layerGroup();
-        esmpLayerGroup.addTo(map);
-        esiaLayerGroup.addTo(map);
+            // Layer Groups
+            var esmpLayerGroup = L.layerGroup();
+            var esiaLayerGroup = L.layerGroup();
+            esmpLayerGroup.addTo(map);
+            esiaLayerGroup.addTo(map);
+            
             // Other Map Controls
-        var coordsDiv = document.getElementById('coords-display');
-        map.on('mousemove', function(e) {
-            var lat = e.latlng.lat.toFixed(4);
-            var lng = e.latlng.lng.toFixed(4);
-            coordsDiv.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
-        });
-        var baseLayers = {
-            "Street Map": osm,
-            "Satellite": satelliteWithLabels,
-            "Topographic Map": OpenTopoMap,
-            "Light Map": positron
-        };
-        var overlayLayers = {
-            "NCA-CDA Locational Data": esmpLayerGroup,
-            "Area of Interest (AOI)": esiaLayerGroup
-        };
-        L.control.layers(baseLayers, overlayLayers).addTo(map);
+            var coordsDiv = document.getElementById('coords-display');
+            map.on('mousemove', function(e) {
+                var lat = e.latlng.lat.toFixed(4);
+                var lng = e.latlng.lng.toFixed(4);
+                coordsDiv.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
+            });
+            
+            var baseLayers = {
+                "Street Map": osm,
+                "Satellite": satelliteWithLabels,
+                "Topographic Map": OpenTopoMap,
+                "Light Map": positron
+            };
+            
+            var overlayLayers = {
+                "NCA-CDA Locational Data": esmpLayerGroup,
+                "Area of Interest (AOI)": esiaLayerGroup
+            };
+            
+            L.control.layers(baseLayers, overlayLayers).addTo(map);
 
-
-        // Dashboard with Summary and Charts
-        var esmpSummaryText = `Sustainable Food Systems for Rural Agriculture Transformation and Resilience (TRANSFORM) Programme is targeting 150,000 agriculture-dependent rural households from Dowa, Mchinji, Kasungu, Mzimba and Rumphi. The programme has been implemented since 2020 (inception) and is phasing out in 2025. The goal of the programme is to contribute to sustainable agricultural transformation that will result in significant growth of the agricultural sector in Malawi. This is being achieved by transforming the food systems in the indicated districts. The programme integrates and consolidates diverse skills, experiences, and lessons from past initiatives of the Development Fund of Norway (DF), Norwegian Church Aid (NCA) and the Norwegian University for Life Sciences (NMBU), based on a long history of implementing successful climate change resilience, research and innovation, agricultural and natural resource programmes in Malawi and within the region. The central theme, therefore, involves a new paradigm shift that blends climate change resilience through climate-adapted practices, development of sustainable food systems, action research and market-led value chain approach to produce greater and more sustainable impacts on the lives, livelihoods, and resilience of smallholder farmers in Malawi.`;
-        document.getElementById('esmp-summary').innerHTML = esmpSummaryText;
-
+            // Dashboard with Summary and Charts
+            var esmpSummaryText = `Sustainable Food Systems for Rural Agriculture Transformation and Resilience (TRANSFORM) Programme is targeting 150,000 agriculture-dependent rural households from Dowa, Mchinji, Kasungu, Mzimba and Rumphi. The programme has been implemented since 2020 (inception) and is phasing out in 2025. The goal of the programme is to contribute to sustainable agricultural transformation that will result in significant growth of the agricultural sector in Malawi. This is being achieved by transforming the food systems in the indicated districts. The programme integrates and consolidates diverse skills, experiences, and lessons from past initiatives of the Development Fund of Norway (DF), Norwegian Church Aid (NCA) and the Norwegian University for Life Sciences (NMBU), based on a long history of implementing successful climate change resilience, research and innovation, agricultural and natural resource programmes in Malawi and within the region. The central theme, therefore, involves a new paradigm shift that blends climate change resilience through climate-adapted practices, development of sustainable food systems, action research and market-led value chain approach to produce greater and more sustainable impacts on the lives, livelihoods, and resilience of smallholder farmers in Malawi.`;
+            document.getElementById('esmp-summary').innerHTML = esmpSummaryText;
 
         // Your GeoJSON data embedded directly
         const geoJsonData = {
