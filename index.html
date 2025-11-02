@@ -24,32 +24,58 @@
             overflow-x: hidden;
         }
         
-        #sidebar {
+        /* Navigation Bar Styles */
+        .navbar {
             background-color: #f8f9fa;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            height: 100vh;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 10px 0;
+            z-index: 1000;
         }
         
-        #sidebar h4, #sidebar h5 {
-            margin-top: 15px;
-            margin-bottom: 5px;
-        }
-        
-        .header-container {
+        .navbar-brand {
             display: flex;
-            align-items: center; 
-            margin-bottom: 20px;
+            align-items: center;
         }
         
-        .header-container h4 {
-            margin: 0; 
-            margin-left: 10px; 
+        .navbar-brand img {
+            width: 60px;
+            margin-right: 10px;
         }
-
+        
+        .navbar-brand h4 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 5px 10px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        /* Map container takes full height minus navbar */
+        #map-container {
+            height: calc(100vh - 70px);
+        }
+        
+        #map {
+            height: 100%;
+        }
+        
         .leaflet-control {
             z-index: 1001;
         }
@@ -107,26 +133,50 @@
             z-index: 1000;
         }
         
+        /* About Us page styles */
+        #about-us {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .about-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .about-header img {
+            width: 80px;
+            margin-right: 15px;
+        }
+        
+        .about-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .about-content h5 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        
         /* Mobile-specific styles */
         @media (max-width: 768px) {
-            #sidebar {
-                height: auto;
-                max-height: 40vh;
-                padding: 10px;
+            .navbar-brand h4 {
+                font-size: 1rem;
             }
             
-            #map {
-                height: 60vh;
+            #map-container {
+                height: calc(100vh - 60px);
             }
             
             #coords-display {
                 left: 10px;
                 bottom: 10px;
                 font-size: 12px;
-            }
-            
-            .header-container h4 {
-                font-size: 16px;
             }
             
             .legend {
@@ -137,57 +187,49 @@
                 width: 14px;
                 height: 14px;
             }
-        }
-        
-        /* Collapsible sidebar for mobile */
-        .sidebar-toggle {
-            display: none;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1002;
-            background: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar-toggle {
-                display: block;
+            
+            .about-header {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .sidebar-hidden {
-                display: none;
+            .about-header img {
+                margin-right: 0;
+                margin-bottom: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Bootstrap container for responsive layout -->
-    <div class="container-fluid p-0">
-        <div class="row g-0">
-            <!-- Sidebar column -->
-            <div class="col-lg-3 col-md-4" id="sidebar">
-                <div class="header-container">
-                    <img src="LOGO.png" alt="NCA-CDA Logo" style="width: 80px;">
-                    <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
-                </div>
-                
-                <h5>BACKGROUND</h5>
-                <div id="esmp-summary"></div>
-                <canvas id="esmpPieChart" style="margin-top: 20px;"></canvas>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="LOGO.png" alt="NCA-CDA Logo">
+                <h4>NCA-CDA PROJECT MAP</h4>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon">☰</span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About Us</a>
+                    </li>
+                </ul>
             </div>
-            
-            <!-- Map column -->
-            <div class="col-lg-9 col-md-8">
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    ☰
-                </button>
-                <div id="map" style="height: 100vh;"></div>
-                <div id="coords-display"></div>
-            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Map Container (Home Page) -->
+        <div id="map-container">
+            <div id="map"></div>
+            <div id="coords-display"></div>
         </div>
     </div>
     
@@ -269,10 +311,6 @@
         };
         
         L.control.layers(baseLayers, overlayLayers).addTo(map);
-
-        // Dashboard with Summary and Charts
-        var esmpSummaryText = `Sustainable Food Systems for Rural Agriculture Transformation and Resilience (TRANSFORM) Programme is targeting 150,000 agriculture-dependent rural households from Dowa, Mchinji, Kasungu, Mzimba and Rumphi. The programme has been implemented since 2020 (inception) and is phasing out in 2025. The goal of the programme is to contribute to sustainable agricultural transformation that will result in significant growth of the agricultural sector in Malawi. This is being achieved by transforming the food systems in the indicated districts. The programme integrates and consolidates diverse skills, experiences, and lessons from past initiatives of the Development Fund of Norway (DF), Norwegian Church Aid (NCA) and the Norwegian University for Life Sciences (NMBU), based on a long history of implementing successful climate change resilience, research and innovation, agricultural and natural resource programmes in Malawi and within the region. The central theme, therefore, involves a new paradigm shift that blends climate change resilience through climate-adapted practices, development of sustainable food systems, action research and market-led value chain approach to produce greater and more sustainable impacts on the lives, livelihoods, and resilience of smallholder farmers in Malawi.`;
-        document.getElementById('esmp-summary').innerHTML = esmpSummaryText;
 
         // Your GeoJSON data embedded directly
         const geoJsonData = {
@@ -573,11 +611,6 @@
         // Initialize the map when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
-            
-            // Toggle sidebar on mobile
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-            });
             
             // Adjust map height on window resize
             window.addEventListener('resize', function() {

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - NCA-CDA Project Map</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Navigation Bar Styles */
+        .navbar {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand img {
+            width: 60px;
+            margin-right: 10px;
+        }
+        
+        .navbar-brand h4 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 5px 10px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        /* About Us page styles */
+        #about-us {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .about-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .about-header img {
+            width: 80px;
+            margin-right: 15px;
+        }
+        
+        .about-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .about-content h5 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .navbar-brand h4 {
+                font-size: 1rem;
+            }
+            
+            .about-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .about-header img {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="LOGO.png" alt="NCA-CDA Logo">
+                <h4>NCA-CDA PROJECT MAP</h4>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon">☰</span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="about.html">About Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Us Content -->
+    <div id="about-us">
+        <div class="about-header">
+            <img src="LOGO.png" alt="NCA-CDA Logo">
+            <h4>NORWEGIAN CHURCH AID/DANCHURCH AID</h4>
+        </div>
+        
+        <div class="about-content">
+            <h5>BACKGROUND</h5>
+            <div id="esmp-summary">
+                Sustainable Food Systems for Rural Agriculture Transformation and Resilience (TRANSFORM) Programme is targeting 150,000 agriculture-dependent rural households from Dowa, Mchinji, Kasungu, Mzimba and Rumphi. The programme has been implemented since 2020 (inception) and is phasing out in 2025. The goal of the programme is to contribute to sustainable agricultural transformation that will result in significant growth of the agricultural sector in Malawi. This is being achieved by transforming the food systems in the indicated districts. The programme integrates and consolidates diverse skills, experiences, and lessons from past initiatives of the Development Fund of Norway (DF), Norwegian Church Aid (NCA) and the Norwegian University for Life Sciences (NMBU), based on a long history of implementing successful climate change resilience, research and innovation, agricultural and natural resource programmes in Malawi and within the region. The central theme, therefore, involves a new paradigm shift that blends climate change resilience through climate-adapted practices, development of sustainable food systems, action research and market-led value chain approach to produce greater and more sustainable impacts on the lives, livelihoods, and resilience of smallholder farmers in Malawi.
+            </div>
+            <canvas id="esmpPieChart" style="margin-top: 20px;"></canvas>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
