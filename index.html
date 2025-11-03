@@ -234,13 +234,27 @@
         #searchContainer {
             position: absolute;
             top: 150px;
-            left: 70px; /* slightly shifted to the right */
+            left: 50px; /* slightly shifted to the right */
             z-index: 1000;
             background: white;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             width: 300px;
             max-width: 90%;
+        }
+
+        .info.legend {
+            background: white;
+            padding: 8px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            line-height: 20px;
+            width: 350px;
+        }
+
+        #toggleLegendBtn {
+            font-size: 14px;
+            text-align: left;
         }
         
         /* Mobile-specific styles */
@@ -731,25 +745,80 @@
     //bottomleft
     //topright
     //topleft
-    const legend = L.control({ position: 'bottomleft' });
+
+    // const legend = L.control({ position: 'bottomleft' });
     
-    legend.onAdd = function(map) {
-        const div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML = '<h4>Intervention Types</h4>';
+   // legend.onAdd = function(map) {
+   //     const div = L.DomUtil.create('div', 'info legend');
+   //     div.innerHTML = '<h4>Intervention Types</h4>';
         
-        // Add legend items for each intervention type
+   //     // Add legend items for each intervention type
+   //     Object.keys(interventionColors).forEach(interventionType => {
+   //         div.innerHTML += `
+   //             <div>
+   //                 <i style="background:${interventionColors[interventionType]}"></i>
+    //                ${interventionType}<br>
+     //           </div>
+    //        `;
+    //    });
+        
+    //    return div;
+    //};
+    
+    //legend.addTo(map);
+
+
+    const legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function(map) {
+        // Create a wrapper div for the entire legend (collapsible)
+        const div = L.DomUtil.create('div', 'info legend');
+
+        // Add toggle button
+        div.innerHTML = `
+            <button id="toggleLegendBtn" class="btn btn-light btn-sm shadow-sm" style="width:100%;">
+                <i class="fas fa-list"></i> Legend
+            </button>
+            <div id="legendContent" style="display:none; margin-top:5px;">
+                <h6><b>Intervention Types</b></h6>
+            </div>
+        `;
+
+        // Add legend items dynamically
+        const contentDiv = document.createElement('div');
         Object.keys(interventionColors).forEach(interventionType => {
-            div.innerHTML += `
+            contentDiv.innerHTML += `
                 <div>
-                    <i style="background:${interventionColors[interventionType]}"></i>
-                    ${interventionType}<br>
+                    <i style="background:${interventionColors[interventionType]}; width:15px; height:15px; display:inline-block; margin-right:5px; border-radius:3px;"></i>
+                    ${interventionType}
                 </div>
             `;
         });
-        
+
+        // Append items to legend content
+        div.querySelector('#legendContent').appendChild(contentDiv);
+
+        // Prevent map drag when clicking inside legend
+        L.DomEvent.disableClickPropagation(div);
+
         return div;
     };
+
     legend.addTo(map);
+
+
+    // Toggle legend visibility
+    document.addEventListener("click", function(e) {
+        if (e.target && e.target.id === "toggleLegendBtn") {
+            const legendContent = document.getElementById("legendContent");
+            if (legendContent.style.display === "none") {
+                legendContent.style.display = "block";
+            } else {
+                legendContent.style.display = "none";
+            }
+        }
+    });
+
     L.control.layers(baseLayers, interventionGroups).addTo(map);
     // Create layer control
     //const layerControl = L.control.layers(null, interventionGroups, {
