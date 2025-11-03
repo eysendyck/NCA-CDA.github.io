@@ -610,197 +610,187 @@
         
         L.control.layers(baseLayers, overlayLayers).addTo(map);
 
-        // Hide loading indicator
-    document.getElementById('loading').style.display = 'none';
-    
-    // Define colors for different intervention types
-    const interventionColors = {
-        "Livestock Placement & Pass-on (Village Centra Location)": "#1f77b4",
-        "Village (Chief's House)": "#ff7f0e",
-        "Micro Investment (Incubator)": "#2ca02c",
-        "Village Natural Resources Management Committee (Chief's House)": "#d62728",
-        "Farmer Field School (Central Location)": "#9467bd",
-        "Waterpoint": "#8c564b",
-        "Small Scale Mechanisation (Machine location)": "#e377c2",
-        "Club (Central Location)": "#7f7f7f",
-        "Climate Adaptive Village (CAV)": "#bcbd22",
-        "Seedbank (Central Location)": "#17becf",
-        "Village Savings & Loans Association (Central Location)": "#aec7e8",
-        "Community Based Breeding Programme (Central Location)": "#ffbb78",
-        "Water Users Association (Central Location)": "#98df8a",
-        "Cooperative (Centra Location)": "#ff9896",
-        "Lead Follower Farmer (Village Central Location)": "#c5b0d5",
-        "Watershed (Central Location)": "#c49c94",
-        "Other (specify)": "#f7b6d2"
-    };
-    
-    // Function to get color based on intervention type
-    function getInterventionColor(interventionType) {
-        return interventionColors[interventionType] || "#000000"; // Default to black if not found
-    }
-    
-    // Create intervention type groups
-    const interventionGroups = {};
-    
-    // Process GeoJSON data and add to map
-    geoJsonData.features.forEach(feature => {
-        const interventionType = feature.properties.TRANSFORM_;
         
-        // Create a group for this intervention type if it doesn't exist
-        if (!interventionGroups[interventionType]) {
-            interventionGroups[interventionType] = L.layerGroup().addTo(map);
-        }
-        
-        // Create marker with appropriate color
-        const marker = L.circleMarker(
-            [feature.geometry.coordinates[1], feature.geometry.coordinates[0]],
-            {
-                radius: 8,
-                fillColor: getInterventionColor(interventionType),
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
+
+        // Color coding for different organizations
+        function getColor(organization) {
+            switch(organization) {
+                case 'fyf': return '#1f77b4';
+                case 'cadecom': return '#ff7f0e';
+                case 'tlc': return '#2ca02c';
+                case 'ag_care': return '#d62728';
+                case 'tapp' : return '#8a00c2';
+                default: return '#9467bd';
             }
-        );
-        
-        // Create popup content
-        const popupContent = `
-            <div>
-                <strong>${interventionType}</strong><br>
-                <strong>Village:</strong> ${feature.properties.Village || 'N/A'}<br>
-                <strong>District:</strong> ${feature.properties.District || 'N/A'}<br>
-                <strong>Organization:</strong> ${feature.properties.Organisati || 'N/A'}<br>
-                <strong>GVH:</strong> ${feature.properties.GVH || 'N/A'}<br>
-                <strong>Submitted by:</strong> ${feature.properties.Name || 'N/A'}
-            </div>
-        `;
-        
-        marker.bindPopup(popupContent);
-        
-        // Add marker to the appropriate intervention group
-        interventionGroups[interventionType].addLayer(marker);
-    });
-    
-    // Create legend
-    //bottomleft
-    //topright
-    //topleft
-    const legend = L.control({ position: 'bottomright' });
-    
-    legend.onAdd = function(map) {
-        const div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML = '<h4>Intervention Types</h4>';
-        
-        // Add legend items for each intervention type
-        Object.keys(interventionColors).forEach(interventionType => {
-            div.innerHTML += `
-                <div>
-                    <i style="background:${interventionColors[interventionType]}"></i>
-                    ${interventionType}<br>
-                </div>
-            `;
-        });
-        
-        return div;
-    };
-    
-    legend.addTo(map);
-    
-    // Create layer control
-    const layerControl = L.control.layers(null, interventionGroups, {
-        position: 'topright',
-        //collaped - true or false
-        collapsed: true
-    }).addTo(map);
-    
-    // Display coordinates on mouse move
-    map.on('mousemove', function(e) {
-        document.getElementById('coords-display').innerHTML = 
-            `Lat: ${e.latlng.lat.toFixed(5)}, Lng: ${e.latlng.lng.toFixed(5)}`;
-    });
-    
-    // Search functionality
-    const searchInput = document.querySelector('.search-input');
-    const searchResults = document.getElementById('searchResults');
-    const clearSearch = document.getElementById('clearSearch');
-    
-    // Create an array of searchable items
-    const searchItems = [];
-    
-    geoJsonData.features.forEach(feature => {
-        const item = {
-            intervention: feature.properties.TRANSFORM_,
-            village: feature.properties.Village,
-            district: feature.properties.District,
-            organization: feature.properties.Organisati,
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0]
+        }
+
+        // Create a legend
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                organizations = ['fyf', 'cadecom', 'tlc', 'ag_care', 'tapp'],
+                labels = [];
+
+            // Add title
+            div.innerHTML = '<h4>Organizations</h4>';
+
+            // Loop through organizations and generate a label with a colored square for each
+            for (var i = 0; i < organizations.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(organizations[i]) + '"></i> ' +
+                    organizations[i] + '<br>';
+            }
+
+            return div;
         };
-        
-        searchItems.push(item);
-    });
-    
-    // Search function
-    function performSearch(query) {
-        const results = searchItems.filter(item => {
-            const searchText = `${item.intervention} ${item.village} ${item.district} ${item.organization}`.toLowerCase();
-            return searchText.includes(query.toLowerCase());
-        });
-        
-        displaySearchResults(results);
-    }
-    
-    // Display search results
-    function displaySearchResults(results) {
-        searchResults.innerHTML = '';
-        
-        if (results.length === 0) {
-            searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
-        } else {
-            results.forEach(result => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'search-result-item';
-                resultItem.innerHTML = `
-                    <strong>${result.intervention}</strong><br>
-                    <small>Village: ${result.village || 'N/A'}, District: ${result.district || 'N/A'}</small>
+
+        legend.addTo(map);
+
+        // Add the GeoJSON data to the map
+        var interventions = L.geoJSON(geoJsonData, {
+            pointToLayer: function(feature, latlng) {
+                // Create a circle marker for each intervention
+                return L.circleMarker(latlng, {
+                    radius: 8,
+                    fillColor: getColor(feature.properties.Organisati),
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+            },
+            onEachFeature: function(feature, layer) {
+                // Create popup content
+                var props = feature.properties;
+                var popupContent = `
+                    <div>
+                        <h3>${props.TRANSFORM_}</h3>
+                        <p><strong>Organization:</strong> ${props.Organisati}</p>
+                        <p><strong>District:</strong> ${props.District}</p>
+                        <p><strong>Village:</strong> ${props.Village}</p>
+                        <p><strong>GVH:</strong> ${props.GVH}</p>
+                        <p><strong>Name:</strong> ${props.Name}</p>
+                        <p><strong>Submission Date:</strong> ${props._submissio}</p>
+                        ${props.Altitude ? `<p><strong>Altitude:</strong> ${props.Altitude} m</p>` : ''}
+                        ${props._Intervent ? `<p><strong>Intervention Value:</strong> ${props._Intervent}</p>` : ''}
+                    </div>
                 `;
                 
-                resultItem.addEventListener('click', () => {
-                    map.setView([result.lat, result.lng], 13);
-                    searchResults.style.display = 'none';
-                    searchInput.value = '';
-                });
+                // Bind popup to layer
+                layer.bindPopup(popupContent);
                 
-                searchResults.appendChild(resultItem);
-            });
-        }
-        
-        searchResults.style.display = 'block';
-    }
-    
-    // Event listeners for search
-    searchInput.addEventListener('input', function() {
-        if (this.value.length > 2) {
-            performSearch(this.value);
-        } else {
-            searchResults.style.display = 'none';
-        }
-    });
-    
-    clearSearch.addEventListener('click', function() {
-        searchInput.value = '';
-        searchResults.style.display = 'none';
-    });
-    
-    // Close search results when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
-            searchResults.style.display = 'none';
-        }
-    });
+                // Store the layer reference for search functionality
+                layer.feature = feature;
+            }
+        }).addTo(map);
 
+        // Fit map to show all interventions
+        map.fitBounds(interventions.getBounds());
         
+        // Hide loading message
+        document.getElementById('loading').style.display = 'none';
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchResults = document.getElementById('searchResults');
+        const clearSearch = document.getElementById('clearSearch');
+        
+        // Function to perform search
+        function performSearch(query) {
+            const results = [];
+            const lowerQuery = query.toLowerCase();
+            
+            // Search through all features
+            geoJsonData.features.forEach(feature => {
+                const props = feature.properties;
+                const searchableText = [
+                    props.TRANSFORM_,
+                    props.Organisati,
+                    props.District,
+                    props.Village,
+                    props.GVH,
+                    props.Name,
+                    props._Intervent
+                ].join(' ').toLowerCase();
+                
+                if (searchableText.includes(lowerQuery)) {
+                    results.push(feature);
+                }
+            });
+            
+            return results;
+        }
+        
+        // Function to display search results
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+            } else {
+                results.forEach(feature => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <strong>${feature.properties.TRANSFORM_}</strong><br>
+                        <small>${feature.properties.District} - ${feature.properties.Village}</small>
+                    `;
+                    
+                    item.addEventListener('click', function() {
+                        // Zoom to the feature
+                        map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 12);
+                        
+                        // Open popup for the feature
+                        interventions.eachLayer(function(layer) {
+                            if (layer.feature === feature) {
+                                layer.openPopup();
+                            }
+                        });
+                        
+                        // Clear search and hide results
+                        searchInput.value = '';
+                        searchResults.style.display = 'none';
+                    });
+                    
+                    searchResults.appendChild(item);
+                });
+            }
+            
+            searchResults.style.display = 'block';
+        }
+        
+        // Event listeners for search
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (query.length > 0) {
+                const results = performSearch(query);
+                displaySearchResults(results);
+            } else {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            searchResults.style.display = 'none';
+            searchInput.focus();
+        });
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Adjust map height on window resize
+        window.addEventListener('resize', function() {
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
+        });
     </script>
 </body>
 </html>
