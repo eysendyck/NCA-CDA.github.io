@@ -222,6 +222,26 @@
             margin-top: 15px;
             margin-bottom: 5px;
         }
+
+
+        .search-toggle {
+            position: absolute;
+            top: 150px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #searchContainer {
+            position: absolute;
+            top: 150px;
+            left: 70px; /* slightly shifted to the right */
+            z-index: 1000;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 300px;
+            max-width: 90%;
+        }
         
         /* Mobile-specific styles */
         @media (max-width: 768px) {
@@ -290,7 +310,7 @@
         </div>
     </nav>
 
-    <!-- Search Bar -->
+    <!-- Search Bar
     <div class="search-container">
         <div class="search-input-container">
             <i class="fas fa-search text-muted"></i>
@@ -300,7 +320,26 @@
             </button>
         </div>
         <div class="search-results" id="searchResults"></div>
+    </div> -->
+
+    <!-- Collapsible Search Bar -->
+<div class="search-toggle" id="searchToggle">
+    <button class="btn btn-light shadow-sm" id="toggleSearchBtn">
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+
+<div class="search-container collapse" id="searchContainer">
+    <div class="search-input-container">
+        <i class="fas fa-search text-muted"></i>
+        <input type="text" class="search-input" placeholder="Search projects, districts, villages...">
+        <button class="search-clear" id="clearSearch">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
+    <div class="search-results" id="searchResults"></div>
+</div>
+
 
     <!-- Main Content -->
     <div id="main-content">
@@ -322,6 +361,12 @@
             crossorigin=""></script>
     
     <script>
+
+
+        document.getElementById("toggleSearchBtn").addEventListener("click", function() {
+            const searchContainer = document.getElementById("searchContainer");
+            searchContainer.classList.toggle("show");
+        });
         // Sample GeoJSON data - in a real application, this would come from an API or file
         const geoJsonData = {
             "type": "FeatureCollection",
@@ -704,11 +749,8 @@
         
         return div;
     };
-    
     legend.addTo(map);
-
     L.control.layers(baseLayers, interventionGroups).addTo(map);
-    
     // Create layer control
     //const layerControl = L.control.layers(null, interventionGroups, {
     //    position: 'topright',
