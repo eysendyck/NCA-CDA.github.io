@@ -832,7 +832,7 @@
         
         // Create a group for this intervention type if it doesn't exist
         if (!interventionGroups[interventionType]) {
-            interventionGroups[interventionType] = L.layerGroup().addTo(map);
+            interventionGroups[interventionType] = L.layerGroup();//.addTo(map);
         }
         
         // Create marker with appropriate color
