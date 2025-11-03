@@ -674,6 +674,127 @@
         // Hide loading indicator
     document.getElementById('loading').style.display = 'none';
 
+    // Define custom icons
+    const icons = {
+      "Livestock Placement & Pass-on (Village Centra Location)": L.icon({
+        iconUrl: 'icons/livestock.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Village (Chief's House)": L.icon({
+        iconUrl: 'icons/village.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Micro Investment (Incubator)": L.icon({
+        iconUrl: 'icons/investment.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Village Natural Resources Management": L.icon({
+        iconUrl: 'icons/natural.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Farmer Field School": L.icon({
+        iconUrl: 'icons/farmer.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Waterpoint": L.icon({
+        iconUrl: 'icons/water.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Small Scale Mechanisation": L.icon({
+        iconUrl: 'icons/smallscale.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Club (Central Location)": L.icon({
+        iconUrl: 'icons/club.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Climate Adaptive Village": L.icon({
+        iconUrl: 'icons/climate.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Seedbank": L.icon({
+        iconUrl: 'icons/seedbank.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Village Savings and Loans Association": L.icon({
+        iconUrl: 'icons/savings.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Community Based Breeding Programme": L.icon({
+        iconUrl: 'icons/community.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Water Users Association": L.icon({
+        iconUrl: 'icons/association.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Cooperative (Central Location)": L.icon({
+        iconUrl: 'icons/cooperative.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Lead Follower Farmer": L.icon({
+        iconUrl: 'icons/lead.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "Watershed": L.icon({
+        iconUrl: 'icons/watershed.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      }),
+      "default": L.icon({
+        iconUrl: 'icons/default.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
+      })
+    };
+
+    L.geoJSON(geoJsonData, {
+      pointToLayer: function (feature, latlng) {
+        let iconType = feature.properties.TRANSFORM_;
+        let icon = icons[iconType] || icons["default"];
+
+        return L.marker(latlng, { icon: icon }).bindPopup(`
+          <b>Intervention:</b> ${feature.properties.TRANSFORM_}<br>
+          <b>District:</b> ${feature.properties.District}<br>
+          <b>Organisation:</b> ${feature.properties.Organisati}<br>
+          <b>Village:</b> ${feature.properties.Village}<br>
+          <b>Name:</b> ${feature.properties.Name}
+        `);
+      }
+    }).addTo(map);
+
     
     
     // Define colors for different intervention types
