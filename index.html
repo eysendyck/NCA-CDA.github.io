@@ -608,7 +608,7 @@
             "Area of Interest (AOI)": esiaLayerGroup
         };
         
-        L.control.layers(baseLayers, overlayLayers).addTo(map);
+        //L.control.layers(baseLayers, overlayLayers).addTo(map);
 
         // Hide loading indicator
     document.getElementById('loading').style.display = 'none';
@@ -686,7 +686,7 @@
     //bottomleft
     //topright
     //topleft
-    const legend = L.control({ position: 'bottomright' });
+    const legend = L.control({ position: 'bottomleft' });
     
     legend.onAdd = function(map) {
         const div = L.DomUtil.create('div', 'info legend');
@@ -706,13 +706,15 @@
     };
     
     legend.addTo(map);
+
+    L.control.layers(baseLayers, interventionGroups).addTo(map);
     
     // Create layer control
-    const layerControl = L.control.layers(null, interventionGroups, {
-        position: 'topright',
+    //const layerControl = L.control.layers(null, interventionGroups, {
+    //    position: 'topright',
         //collaped - true or false
-        collapsed: true
-    }).addTo(map);
+    //    collapsed: true
+    //}).addTo(map);
     
     // Display coordinates on mouse move
     map.on('mousemove', function(e) {
