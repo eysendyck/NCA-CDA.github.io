@@ -21,8 +21,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="malawigeo.js"></script>
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <!-- Leaflet Routing Machine -->
     
     <style>
+
         body {
             margin: 0;
             padding: 0;
@@ -152,116 +156,6 @@
         
         .legend-text {
             font-size: 12px;
-        }
-
-        .routing-controls {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            z-index: 1000;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
-            width: 280px;
-        }
-        
-        .routing-info {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            font-size: 13px;
-            display: none;
-        }
-        
-        .transport-popup {
-            min-width: 200px;
-        }
-        
-        .transport-popup h5 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-        
-        .btn-routing {
-            width: 100%;
-            margin-bottom: 8px;
-        }
-        
-        .coordinates-display {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 13px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .navbar-brand {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        
-        .status-active {
-            background-color: #28a745;
-        }
-        
-        .status-inactive {
-            background-color: #6c757d;
-        }
-        
-        .route-stats {
-            background: #e9f7fe;
-            border-left: 4px solid #3498db;
-            padding: 8px 12px;
-            margin-top: 10px;
-            border-radius: 4px;
-        }
-        
-        .custom-marker {
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        .start-marker {
-            background-color: #28a745;
-            width: 30px;
-            height: 30px;
-        }
-        
-        .end-marker {
-            background-color: #dc3545;
-            width: 30px;
-            height: 30px;
-        }
-        
-        .routing-instructions {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #6c757d;
-            font-style: italic;
         }
         
         /* Map container takes full height minus navbar */
@@ -394,6 +288,166 @@
             font-size: 14px;
             text-align: left;
         }
+
+
+        .routing-controls {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            width: 280px;
+            transition: all 0.3s ease;
+        }
+        
+        .routing-controls.collapsed {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .routing-controls.collapsed .routing-content {
+            display: none;
+        }
+        
+        .routing-toggle {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 1001;
+        }
+        
+        .routing-content {
+            transition: opacity 0.3s ease;
+        }
+        
+        .routing-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .transport-popup {
+            min-width: 200px;
+        }
+        
+        .transport-popup h5 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .btn-routing {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .coordinates-display {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-active {
+            background-color: #28a745;
+        }
+        
+        .status-inactive {
+            background-color: #6c757d;
+        }
+        
+        .route-stats {
+            background: #e9f7fe;
+            border-left: 4px solid #3498db;
+            padding: 8px 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        
+        .custom-marker {
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .start-marker {
+            background-color: #28a745;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .end-marker {
+            background-color: #dc3545;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .routing-instructions {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .collapsed-icon {
+            display: none;
+            text-align: center;
+            padding: 15px 0;
+        }
+        
+        .routing-controls.collapsed .collapsed-icon {
+            display: block;
+        }
+        
+        .routing-controls.collapsed .routing-toggle {
+            position: relative;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
         /* Mobile-specific styles */
         @media (max-width: 768px) {
@@ -448,7 +502,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
                 <img src="LOGO.png" alt="NCA-CDA Logo">
-                <h4>NCA-CDA PROJECT MAP</h4>
+                <h4>NCA-DCA Transform Program</h4>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -466,17 +520,39 @@
         </div>
     </nav>
 
-    <!-- Search Bar
-    <div class="search-container">
-        <div class="search-input-container">
-            <i class="fas fa-search text-muted"></i>
-            <input type="text" class="search-input" placeholder="Search projects, districts, villages...">
-            <button class="search-clear" id="clearSearch">
-                <i class="fas fa-times"></i>
-            </button>
+    <!-- Routing Controls -->
+    <div class="routing-controls collapsed" id="routingControls">
+        <button class="routing-toggle" id="routingToggle">
+            <i class="fas fa-route"></i>
+        </button>
+        <div class="collapsed-icon">
+            <i class="fas fa-route fa-lg"></i>
         </div>
-        <div class="search-results" id="searchResults"></div>
-    </div> -->
+        <div class="routing-content">
+            <h6><i class="fas fa-route me-2"></i>Directions</h6>
+            <button id="startRouting" class="btn btn-primary btn-routing">
+                <i class="fas fa-play me-1"></i> Start Routing
+            </button>
+            <button id="clearRoute" class="btn btn-secondary btn-routing">
+                <i class="fas fa-times me-1"></i> Clear Route
+            </button>
+            
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="autoRouting" checked>
+                <label class="form-check-label" for="autoRouting">
+                    Auto routing mode
+                </label>
+            </div>
+            
+            <div class="routing-instructions">
+                <small>Click anywhere on the map to set start and end points</small>
+            </div>
+            
+            <div id="routeInfo" class="routing-info">
+                <!-- Route information will appear here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Collapsible Search Bar -->
 <div class="search-toggle" id="searchToggle">
@@ -507,14 +583,13 @@
     </div>
     
     <div id="loading" class="loading">Loading map data...</div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-            crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <!-- Bootstrap JS -->
     
     <script>
 
@@ -949,8 +1024,15 @@
       })
     };
 
+    // Routing variables
+    let routingControl = null;
+    let startPoint = null;
+    let endPoint = null;
+    let clickCount = 0;
+    let isRoutingMode = false;
+    let routeMarkers = [];
 
-        // Create layer groups for each transport type
+    // Create layer groups for each transport type
         const interventionLayers = {};
         // Process GeoJSON data and add to map
         L.geoJSON(geoJsonData, {
@@ -962,18 +1044,29 @@
                     interventionLayers[interv_Type] = L.layerGroup();
                 }
                 //Create markers on the web map using the icons
-                const marker = L.marker(latlng, { icon: icon })
-                    .bindPopup(`
+                const marker = L.marker(latlng, { icon: icon });
 
-                        <div>
-                        <strong>Intervention: ${feature.properties.TRANSFORM_}</strong><br>
-                        <strong>Village:</strong> ${feature.properties.Village || 'N/A'}<br>
-                        <strong>GVH:</strong> ${feature.properties.GVH || 'N/A'}<br>
-                        <strong>District:</strong> ${feature.properties.District || 'N/A'}<br>
-                        <strong>Organization:</strong> ${feature.properties.Organisati || 'N/A'}<br>
-                        </div>
-                        
-                    `);
+                // Determine status indicator color
+                //const statusClass = feature.properties.status === "Operational" ? "status-active" : "status-inactive";
+                
+                // Create popup content
+                const popupContent = `
+                    <div class="transport-popup">
+                        <h5>${feature.properties.TRANSFORM_}</h5>
+                        <p><strong>District:</strong> ${feature.properties.District}</p>
+                        <p><strong>Organisation:</strong> ${feature.properties.Organisati}</p>
+                        <p><strong>Village:</strong> ${feature.properties.Village}</p>
+                        <hr>
+                        <button class="btn btn-sm btn-primary use-as-start w-100 mb-2">
+                            <i class="fas fa-play-circle me-1"></i> Set as Start
+                        </button>
+                        <button class="btn btn-sm btn-success use-as-end w-100 mb-2">
+                            <i class="fas fa-flag-checkered me-1"></i> Set as Destination
+                        </button>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+
                 // Add marker to the appropriate layer group
                 interventionLayers[interv_Type].addLayer(marker);
                 return marker;
@@ -1027,8 +1120,330 @@
                 legendContent.style.display = "none";
             }
         }
-    });   
- 
+    });
+
+        // Handle map clicks for routing
+        function handleMapClick(latlng) {
+            if (!isRoutingMode) return;
+            
+            clickCount++;
+            
+            if (clickCount === 1) {
+                // First click - set as start point
+                startPoint = latlng;
+                
+                // Remove any existing start marker
+                routeMarkers.forEach(marker => {
+                    if (marker.options && marker.options.className === 'start-marker') {
+                        map.removeLayer(marker);
+                    }
+                });
+                
+                // Add start marker
+                const startMarker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'custom-marker start-marker',
+                        html: 'A',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(map);
+                
+                startMarker.bindPopup(`
+                    <div class="transport-popup">
+                        <h5>Start Point</h5>
+                        <p><strong>Coordinates:</strong><br>
+                        Lat: ${latlng.lat.toFixed(4)}<br>
+                        Lng: ${latlng.lng.toFixed(4)}</p>
+                        <button class="btn btn-sm btn-outline-secondary clear-route w-100">
+                            <i class="fas fa-times me-1"></i> Clear Route
+                        </button>
+                    </div>
+                `).openPopup();
+                
+                routeMarkers.push(startMarker);
+                
+                updateRouteInfo(`Start point set! Click anywhere else to set destination.`);
+            } else if (clickCount === 2) {
+                // Second click - set as end point and calculate route
+                endPoint = latlng;
+                
+                // Remove any existing end marker
+                routeMarkers.forEach(marker => {
+                    if (marker.options && marker.options.className === 'end-marker') {
+                        map.removeLayer(marker);
+                    }
+                });
+                
+                // Add end marker
+                const endMarker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'custom-marker end-marker',
+                        html: 'B',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(map);
+                
+                endMarker.bindPopup(`
+                    <div class="transport-popup">
+                        <h5>Destination Point</h5>
+                        <p><strong>Coordinates:</strong><br>
+                        Lat: ${latlng.lat.toFixed(4)}<br>
+                        Lng: ${latlng.lng.toFixed(4)}</p>
+                        <button class="btn btn-sm btn-outline-secondary clear-route w-100">
+                            <i class="fas fa-times me-1"></i> Clear Route
+                        </button>
+                    </div>
+                `).openPopup();
+                
+                routeMarkers.push(endMarker);
+                
+                calculateRoute(startPoint, endPoint);
+                clickCount = 0; // Reset for next route
+            }
+        }
+
+        // Calculate and display route
+        function calculateRoute(start, end) {
+            // Remove existing route
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+            
+            // Create new route
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(start.lat, start.lng),
+                    L.latLng(end.lat, end.lng)
+                ],
+                routeWhileDragging: false,
+                showAlternatives: false,
+                lineOptions: {
+                    styles: [
+                        {color: '#3498db', opacity: 0.8, weight: 6},
+                        {color: '#2980b9', opacity: 0.6, weight: 8}
+                    ]
+                },
+                createMarker: function() { return null; } // Don't create default markers
+            }).addTo(map);
+            
+            // Listen for route found event
+            routingControl.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    const route = routes[0];
+                    const summary = route.summary;
+                    
+                    const distanceKm = (summary.totalDistance / 1000).toFixed(1);
+                    const timeMinutes = Math.round(summary.totalTime / 60);
+                    
+                    updateRouteInfo(`
+                        <div class="route-stats">
+                            <strong>Route Calculated Successfully!</strong><br>
+                            <strong>Distance:</strong> ${distanceKm} km<br>
+                            <strong>Estimated Time:</strong> ${timeMinutes} minutes<br>
+                            <strong>From:</strong> Lat: ${start.lat.toFixed(4)}, Lng: ${start.lng.toFixed(4)}<br>
+                            <strong>To:</strong> Lat: ${end.lat.toFixed(4)}, Lng: ${end.lng.toFixed(4)}
+                        </div>
+                    `);
+                }
+            });
+            
+            // Handle routing errors
+            routingControl.on('routingerror', function(e) {
+                updateRouteInfo(`<div class="text-danger"><strong>Routing Error:</strong> Could not calculate route between selected points.</div>`);
+            });
+        }
+
+        // Clear route function
+        function clearRoute() {
+            if (routingControl) {
+                map.removeControl(routingControl);
+                routingControl = null;
+            }
+            
+            // Remove route markers
+            routeMarkers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            routeMarkers = [];
+            
+            clickCount = 0;
+            startPoint = null;
+            endPoint = null;
+            updateRouteInfo('Route cleared. Click "Start Routing" to begin again.');
+            
+            // Close any open popups related to routing
+            map.closePopup();
+        }
+
+        // Update route information display
+        function updateRouteInfo(html) {
+            const routeInfo = document.getElementById('routeInfo');
+            routeInfo.innerHTML = html;
+            routeInfo.style.display = 'block';
+        }
+
+        // Toggle routing mode
+        document.getElementById('startRouting').addEventListener('click', function() {
+            isRoutingMode = true;
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-success');
+            this.innerHTML = '<i class="fas fa-check me-1"></i> Routing Active';
+            updateRouteInfo('Routing mode active. Click anywhere on the map to set start and destination points.');
+        });
+
+        // Clear route button
+        document.getElementById('clearRoute').addEventListener('click', clearRoute);
+
+        // Auto routing checkbox
+        document.getElementById('autoRouting').addEventListener('change', function() {
+            isRoutingMode = this.checked;
+            if (isRoutingMode) {
+                document.getElementById('startRouting').click();
+            } else {
+                document.getElementById('startRouting').classList.remove('btn-success');
+                document.getElementById('startRouting').classList.add('btn-primary');
+                document.getElementById('startRouting').innerHTML = '<i class="fas fa-play me-1"></i> Start Routing';
+                updateRouteInfo('Auto routing disabled. Click "Start Routing" to enable.');
+            }
+        });
+
+        // Toggle routing controls collapse/expand
+        document.getElementById('routingToggle').addEventListener('click', function() {
+            const routingControls = document.getElementById('routingControls');
+            routingControls.classList.toggle('collapsed');
+            
+            if (routingControls.classList.contains('collapsed')) {
+                this.innerHTML = '<i class="fas fa-route"></i>';
+            } else {
+                this.innerHTML = '<i class="fas fa-times"></i>';
+            }
+        });
+
+        // Add event listeners for popup buttons (delegated)
+        map.on('popupopen', function(e) {
+            const popup = e.popup;
+            const container = popup._container;
+            
+            // Use as Start button
+            const startBtn = container.querySelector('.use-as-start');
+            if (startBtn) {
+                startBtn.onclick = function() {
+                    startPoint = e.popup._latlng;
+                    clickCount = 1;
+                    
+                    // Clear any existing markers
+                    routeMarkers.forEach(marker => {
+                        if (marker.options && marker.options.className === 'start-marker') {
+                            map.removeLayer(marker);
+                        }
+                    });
+                    
+                    // Add start marker
+                    const startMarker = L.marker(e.popup._latlng, {
+                        icon: L.divIcon({
+                            className: 'custom-marker start-marker',
+                            html: 'A',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+                    
+                    startMarker.bindPopup(`
+                        <div class="transport-popup">
+                            <h5>Start Point</h5>
+                            <p><strong>Location:</strong> ${e.popup.getContent().match(/<h5>(.*?)<\/h5>/)[1]}</p>
+                            <button class="btn btn-sm btn-outline-secondary clear-route w-100">
+                                <i class="fas fa-times me-1"></i> Clear Route
+                            </button>
+                        </div>
+                    `).openPopup();
+                    
+                    routeMarkers.push(startMarker);
+                    
+                    updateRouteInfo(`Start point set at ${e.popup.getContent().match(/<h5>(.*?)<\/h5>/)[1]}! Click destination.`);
+                    map.closePopup();
+                };
+            }
+            
+            // Use as End button
+            const endBtn = container.querySelector('.use-as-end');
+            if (endBtn) {
+                endBtn.onclick = function() {
+                    endPoint = e.popup._latlng;
+                    clickCount = 2;
+                    
+                    // Clear any existing markers
+                    routeMarkers.forEach(marker => {
+                        if (marker.options && marker.options.className === 'end-marker') {
+                            map.removeLayer(marker);
+                        }
+                    });
+                    
+                    // Add end marker
+                    const endMarker = L.marker(e.popup._latlng, {
+                        icon: L.divIcon({
+                            className: 'custom-marker end-marker',
+                            html: 'B',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+                    
+                    endMarker.bindPopup(`
+                        <div class="transport-popup">
+                            <h5>Destination Point</h5>
+                            <p><strong>Location:</strong> ${e.popup.getContent().match(/<h5>(.*?)<\/h5>/)[1]}</p>
+                            <button class="btn btn-sm btn-outline-secondary clear-route w-100">
+                                <i class="fas fa-times me-1"></i> Clear Route
+                            </button>
+                        </div>
+                    `).openPopup();
+                    
+                    routeMarkers.push(endMarker);
+                    
+                    if (startPoint) {
+                        calculateRoute(startPoint, endPoint);
+                        clickCount = 0;
+                    } else {
+                        updateRouteInfo(`Destination set at ${e.popup.getContent().match(/<h5>(.*?)<\/h5>/)[1]}! Now set start point.`);
+                    }
+                    
+                    map.closePopup();
+                };
+            }
+            
+            // Clear Route button
+            const clearBtn = container.querySelector('.clear-route');
+            if (clearBtn) {
+                clearBtn.onclick = clearRoute;
+            }
+        });
+
+        // Add map click handler for routing
+        map.on('click', function(e) {
+            handleMapClick(e.latlng);
+        });
+
+        // Display coordinates on mouse move
+        map.on('mousemove', function(e) {
+            document.getElementById('coords').innerHTML = 
+                `Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`;
+        });
+
+        // Add keyboard shortcut to clear route
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearRoute();
+            }
+        });
+
+        // Initialize with routing mode active
+        document.getElementById('startRouting').click();
+
+
     L.control.layers(baseLayers, interventionLayers).addTo(map);
     // Create layer control
     //const layerControl = L.control.layers(null, interventionGroups, {
