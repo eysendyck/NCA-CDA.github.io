@@ -815,11 +815,14 @@
         let icon = icons[iconType] || icons["default"];
 
         return L.marker(latlng, { icon: icon }).bindPopup(`
-          <b>Intervention:</b> ${feature.properties.TRANSFORM_}<br>
-          <b>District:</b> ${feature.properties.District}<br>
-          <b>Organisation:</b> ${feature.properties.Organisati}<br>
-          <b>Village:</b> ${feature.properties.Village}<br>
-          <b>Name:</b> ${feature.properties.Name}
+
+            <div>
+                <strong>Intervention: ${feature.properties.TRANSFORM_}</strong><br>
+                <strong>Village:</strong> ${feature.properties.Village || 'N/A'}<br>
+                <strong>GVH:</strong> ${feature.properties.GVH || 'N/A'}<br>
+                <strong>District:</strong> ${feature.properties.District || 'N/A'}<br>
+                <strong>Organization:</strong> ${feature.properties.Organisati || 'N/A'}<br>
+            </div>
         `);
       }
     }).addTo(map);
