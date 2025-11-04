@@ -885,12 +885,13 @@
             </div>
         `;
         // Add legend items dynamically
-        const contentDiv = document.createElement('div');
+        const contentDiv = document.createElement('div', 'legend-item');
         Object.keys(icons).forEach(interv_Type => {
+            const iconUrl = icons[interv_Type].options.iconUrl;
             contentDiv.innerHTML += `
                 <div>
-                    <i style="background:${icons[interv_Type]}; width:15px; height:15px; display:inline-block; margin-right:5px; border-radius:3px;"></i>
-                    ${interv_Type}
+                    <img src="${iconUrl}" class="legend-icon" alt="${interv_Type}">
+                    <span class="legend-text">${interv_Type}</span>
                 </div>
             `;
         });
