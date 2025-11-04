@@ -153,6 +153,116 @@
         .legend-text {
             font-size: 12px;
         }
+
+        .routing-controls {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            width: 280px;
+        }
+        
+        .routing-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .transport-popup {
+            min-width: 200px;
+        }
+        
+        .transport-popup h5 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .btn-routing {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .coordinates-display {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-active {
+            background-color: #28a745;
+        }
+        
+        .status-inactive {
+            background-color: #6c757d;
+        }
+        
+        .route-stats {
+            background: #e9f7fe;
+            border-left: 4px solid #3498db;
+            padding: 8px 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        
+        .custom-marker {
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .start-marker {
+            background-color: #28a745;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .end-marker {
+            background-color: #dc3545;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .routing-instructions {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+        }
         
         /* Map container takes full height minus navbar */
         #map-container {
@@ -334,22 +444,22 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
                 <img src="LOGO.png" alt="NCA-CDA Logo">
-                <h4>NCA-DCA TRANSFORM PROGRAM MAP</h4>
+                <h4>NCA-CDA PROJECT MAP</h4>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon">☰</span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
+                        <a class="nav-link active" href="index.html"><i class="fas fa-home me-1"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">About Us</a>
+                        <a class="nav-link" href="about.html"><i class="fas fa-info-circle me-1"></i>About Us</a>
                     </li>
                 </ul>
             </div>
