@@ -129,6 +129,15 @@
             padding: 0 5px;
         }
 
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
         .legend-item {
             display: flex;
             align-items: center;
@@ -268,6 +277,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             line-height: 20px;
             width: 350px;
+            overflow-y: auto;
         }
 
         #toggleLegendBtn {
@@ -283,6 +293,10 @@
             
             #map-container {
                 height: calc(100vh - 60px);
+            }
+
+            .info.legend {
+                overflow-y: auto;
             }
             
             .search-container {
