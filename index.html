@@ -618,7 +618,7 @@
         var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
         });
-        
+
         // Sample GeoJSON data - in a real application, this would come from an API or file
         const geoJsonData = {
             "type": "FeatureCollection",
@@ -1239,9 +1239,9 @@
                     
                     updateRouteInfo(`
                         <div class="route-stats">
-                            <strong>Route Calculated Successfully!</strong><br>
+                            <strong>Route Calculator</strong><br>
                             <strong>Distance:</strong> ${distanceKm} km<br>
-                            <strong>Estimated Time:</strong> ${timeMinutes} minutes<br>
+                            <strong>Estimated Time:</strong> ${(timeMinutes, timeSeconds)} minutes<br>
                             <strong>From:</strong> Lat: ${start.lat.toFixed(4)}, Lng: ${start.lng.toFixed(4)}<br>
                             <strong>To:</strong> Lat: ${end.lat.toFixed(4)}, Lng: ${end.lng.toFixed(4)}
                         </div>
