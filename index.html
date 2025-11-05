@@ -1132,54 +1132,66 @@
             }
         }).addTo(map);
 
-    const legend = L.control({ position: 'bottomright' });
+        const legend = L.control({ position: 'bottomright' });
 
-    legend.onAdd = function(map) {
-        // Create a wrapper div for the entire legend (collapsible)
-        const div = L.DomUtil.create('div', 'info legend');
-        // Add toggle button
-        div.innerHTML = `
-            <button id="toggleLegendBtn" class="btn btn-light btn-sm shadow-sm" style="width:100%;">
-                <i class="fas fa-list"></i> Legend
-            </button>
-            <div id="legendContent" style="display:none; margin-top:5px;">
-                <h6><b>Intervention Types</b></h6>
-            </div>
-        `;
-        // Add legend items dynamically
-        const contentDiv = document.createElement('div', 'legend-item');
-        Object.keys(icons).forEach(interv_Type => {
-            const iconUrl = icons[interv_Type].options.iconUrl;
-            contentDiv.innerHTML += `
-                <div>
-                    <img src="${iconUrl}" class="legend-icon" alt="${interv_Type}">
-                    <span class="legend-text">${interv_Type}</span>
+        legend.onAdd = function(map) {
+            // Create a wrapper div for the entire legend (collapsible)
+            const div = L.DomUtil.create('div', 'info legend');
+            
+            // Add toggle button
+            div.innerHTML = `
+                <button id="toggleLegendBtn" class="btn btn-light btn-sm shadow-sm" style="width:100%;">
+                    <i class="fas fa-list"></i> Legend
+                </button>
+                <div id="legendContent" style="display:none; margin-top:5px;">
+                    <h6><b>Intervention Types</b></h6>
                 </div>
             `;
-        });
+            
+            // Create container for legend items
+            const contentDiv = document.createElement('div');
+            
+            // Add Office legend item
+            contentDiv.innerHTML += `
+                <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <img src="${officeIcon.options.iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="Office">
+                    <span style="font-size: 12px;">Office</span>
+                </div>
+            `;
+            
+            // Add other intervention type legend items
+            Object.keys(icons).forEach(interv_Type => {
+                const iconUrl = icons[interv_Type].options.iconUrl;
+                contentDiv.innerHTML += `
+                    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <img src="${iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="${interv_Type}">
+                        <span style="font-size: 12px;">${interv_Type}</span>
+                    </div>
+                `;
+            });
 
-        // Append items to legend content
-        div.querySelector('#legendContent').appendChild(contentDiv);
+            // Append items to legend content
+            div.querySelector('#legendContent').appendChild(contentDiv);
 
-        // Prevent map drag when clicking inside legend
-        L.DomEvent.disableClickPropagation(div);
+            // Prevent map drag when clicking inside legend
+            L.DomEvent.disableClickPropagation(div);
 
-        return div;
-    };
+            return div;
+        };
 
-    legend.addTo(map);
+        legend.addTo(map);
 
-    // Toggle legend visibility
-    document.addEventListener("click", function(e) {
-        if (e.target && e.target.id === "toggleLegendBtn") {
-            const legendContent = document.getElementById("legendContent");
-            if (legendContent.style.display === "none") {
-                legendContent.style.display = "block";
-            } else {
-                legendContent.style.display = "none";
+        // Toggle legend visibility
+        document.addEventListener("click", function(e) {
+            if (e.target && e.target.id === "toggleLegendBtn") {
+                const legendContent = document.getElementById("legendContent");
+                if (legendContent.style.display === "none") {
+                    legendContent.style.display = "block";
+                } else {
+                    legendContent.style.display = "none";
+                }
             }
-        }
-    });
+        });
 
         // Handle map clicks for routing
         function handleMapClick(latlng) {
