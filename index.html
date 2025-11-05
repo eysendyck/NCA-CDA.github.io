@@ -1078,6 +1078,8 @@
                 // Create layer group for this transport type if it doesn't exist
                 if (!interventionLayers[interv_Type]) {
                     interventionLayers[interv_Type] = L.layerGroup();
+                    // Add marker to the appropriate layer group
+                    interventionLayers[interv_Type].addTo(map);
                 }
                 //Create markers on the web map using the icons
                 const marker = L.marker(latlng, { icon: icon });
