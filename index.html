@@ -1514,8 +1514,9 @@
         // Initialize with routing mode active
         document.getElementById('startRouting').click();
 
-
-    L.control.layers(baseLayers, interventionLayers).addTo(map);
+        // Add to your existing overlay layers
+        interventionLayers["Offices"] = officeLayerGroup;
+        L.control.layers(baseLayers, interventionLayers).addTo(map);
     // Create layer control
     //const layerControl = L.control.layers(null, interventionGroups, {
     //    position: 'topright',
