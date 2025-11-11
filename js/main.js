@@ -1260,13 +1260,16 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                 </div>
             `;
 
-            // Add Latrine legend item
-            //contentDiv.innerHTML += `
-            //    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
-            //        <img src="${lat_icons.options.iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="Office">
-            //        <span style="font-size: 12px;">Office</span>
-            //    </div>
-            //`;
+            // Add other intervention type legend items
+            Object.keys(lat_icons).forEach(status => {
+                const latIcon = lat_icons[status].options.iconUrl;
+                contentDiv.innerHTML += `
+                    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <img src="${latIcon}" style="width: 20px; height: 20px; margin-right: 8px;" alt="${status}">
+                        <span style="font-size: 12px;">${status}</span>
+                    </div>
+                `;
+            });
             
             // Add other intervention type legend items
             Object.keys(icons).forEach(interv_Type => {
