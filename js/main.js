@@ -959,7 +959,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [34.024623, -10.764703]
+                        "coordinates": [33.856389, -10.983611]
                     },
                     "properties": {
                         "name": "Chawayi ECD",
@@ -997,7 +997,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [33.990215, -10.879534]
+                        "coordinates": [33.9902146, -10.8795343]
                     },
                     "properties": {
                         "name": "Luchinda ECD",
@@ -1016,7 +1016,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [33.966841, -10.886321]
+                        "coordinates": [33.798611, -10.945833]
                     },
                     "properties": {
                         "name": "Kahurwa ECD",
@@ -1035,7 +1035,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [33.978522, -10.885581]
+                        "coordinates": [33.874167, -10.918056]
                     },
                     "properties": {
                         "name": "Lukontha CBCC",
@@ -1054,7 +1054,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [33.979884, -10.889479]
+                        "coordinates": [33.931111, -10.896389]
                     },
                     "properties": {
                         "name": "St Martin's Model ECD",
@@ -1073,7 +1073,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [33.987849, -10.897843]
+                        "coordinates": [33.845833, -10.967222]
                     },
                     "properties": {
                         "name": "Kachika ECD",
