@@ -1,5 +1,5 @@
 
-        document.getElementById("toggleSearchBtn").addEventListener("click", function() {
+document.getElementById("toggleSearchBtn").addEventListener("click", function() {
             const searchContainer = document.getElementById("searchContainer");
             searchContainer.classList.toggle("show");
         });
@@ -24,6 +24,8 @@
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>'
         });
 
+        // Sample GeoJSON data - in a real application, this would come from an API or file
+        //const geoJsonData = 
         // Sample GeoJSON data - in a real application, this would come from an API or file
         const geoJsonData = {
             "type": "FeatureCollection",
@@ -253,7 +255,7 @@
 
         // Custom Icons
         var redIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconUrl: 'livestock.png',
             iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
         });
 
@@ -427,7 +429,7 @@
         popupAnchor: [0, -25]
       })
     };
-
+    
     // Routing variables
     let routingControl = null;
     let startPoint = null;
@@ -436,8 +438,8 @@
     let isRoutingMode = false;
     let routeMarkers = [];
 
-     // Custom Icons
-    var officeIcon = L.icon({
+    // Custom Icons
+    var officeIcon =L.icon({
         iconUrl: 'icons/office-building.png',
         iconSize: [15, 25], iconAnchor: [7, 25], popupAnchor: [0, -25]
     });
@@ -456,10 +458,16 @@
             L.marker([item.lat, item.lng], { icon: officeIcon }).addTo(officeLayerGroup).bindPopup(item.name);
         });
 
+        // load GeoJSON from an external file and add it to the map
+        //$.getJSON("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",function(data){
+        //    L.geoJson(data).addTo(map);
+        //});
+
 
     // Create layer groups for each transport type
         const interventionLayers = {};
         // Process GeoJSON data and add to map
+        //$.getJSON("data/geoJsonData.geojson", function(geoJsonData){
         L.geoJSON(geoJsonData, {
             pointToLayer: function(feature, latlng) {
                 const interv_Type = feature.properties.TRANSFORM_;
@@ -500,66 +508,10 @@
             }
         }).addTo(map);
 
-        const legend = L.control({ position: 'bottomright' });
+    //});
 
-        legend.onAdd = function(map) {
-            // Create a wrapper div for the entire legend (collapsible)
-            const div = L.DomUtil.create('div', 'info legend');
-            
-            // Add toggle button
-            div.innerHTML = `
-                <button id="toggleLegendBtn" class="btn btn-light btn-sm shadow-sm" style="width:100%;">
-                    <i class="fas fa-list"></i> Legend
-                </button>
-                <div id="legendContent" style="display:none; margin-top:5px;">
-                    <h6><b>Intervention Types</b></h6>
-                </div>
-            `;
-            
-            // Create container for legend items
-            const contentDiv = document.createElement('div');
-            
-            // Add Office legend item
-            contentDiv.innerHTML += `
-                <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <img src="${officeIcon.options.iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="Office">
-                    <span style="font-size: 12px;">Office</span>
-                </div>
-            `;
-            
-            // Add other intervention type legend items
-            Object.keys(icons).forEach(interv_Type => {
-                const iconUrl = icons[interv_Type].options.iconUrl;
-                contentDiv.innerHTML += `
-                    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <img src="${iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="${interv_Type}">
-                        <span style="font-size: 12px;">${interv_Type}</span>
-                    </div>
-                `;
-            });
+        //map.fitBounds(layer.getBounds());
 
-            // Append items to legend content
-            div.querySelector('#legendContent').appendChild(contentDiv);
-
-            // Prevent map drag when clicking inside legend
-            L.DomEvent.disableClickPropagation(div);
-
-            return div;
-        };
-
-        legend.addTo(map);
-
-        // Toggle legend visibility
-        document.addEventListener("click", function(e) {
-            if (e.target && e.target.id === "toggleLegendBtn") {
-                const legendContent = document.getElementById("legendContent");
-                if (legendContent.style.display === "none") {
-                    legendContent.style.display = "block";
-                } else {
-                    legendContent.style.display = "none";
-                }
-            }
-        });
 
         // Handle map clicks for routing
         function handleMapClick(latlng) {
@@ -679,7 +631,7 @@
                     
                     updateRouteInfo(`
                         <div class="route-stats">
-                            <strong>Route Calculator</strong><br>
+                            <strong>Route Calculated Successfully!</strong><br>
                             <strong>Distance:</strong> ${distanceKm} km<br>
                             <strong>Estimated Time:</strong> ${timeMinutes} minutes<br>
                             <strong>From:</strong> Lat: ${start.lat.toFixed(4)}, Lng: ${start.lng.toFixed(4)}<br>
@@ -885,6 +837,7 @@
         // Add to your existing overlay layers
         interventionLayers["Offices"] = officeLayerGroup;
         L.control.layers(baseLayers, interventionLayers).addTo(map);
+    
     // Create layer control
     //const layerControl = L.control.layers(null, interventionGroups, {
     //    position: 'topright',
@@ -911,7 +864,6 @@
             intervention: feature.properties.TRANSFORM_,
             village: feature.properties.Village,
             district: feature.properties.District,
-            GVH: feature.properties.GVH,
             organization: feature.properties.Organisati,
             lat: feature.geometry.coordinates[1],
             lng: feature.geometry.coordinates[0]
@@ -978,3 +930,375 @@
             searchResults.style.display = 'none';
         }
     });
+
+
+        // GeoJSON data (embedded directly in the HTML)
+        const ecdData = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.9902146, -10.8795343]
+                    },
+                    "properties": {
+                        "name": "Ntchenachena CBCC",
+                        "epa": "Nchenachena",
+                        "status": "Incomplete",
+                        "completed_latrines": true,
+                        "classrooms": "No ECD classrooms, attending at church house",
+                        "water_source": "Not specified",
+                        "garden": "Not specified",
+                        "playground": "Not specified",
+                        "issues": "No ECD classrooms",
+                        "google_maps": "https://maps.app.goo.gl/Ea5JavfcHP7Stxqt6?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.856389, -10.983611]
+                    },
+                    "properties": {
+                        "name": "Chawayi ECD",
+                        "epa": "Nchenachena",
+                        "status": "Incomplete",
+                        "completed_latrines": true,
+                        "classrooms": "Community built classrooms have no roofs",
+                        "water_source": "Not specified",
+                        "garden": "Not specified",
+                        "playground": "Not specified",
+                        "issues": "Children latrines made by burnt bricks (no cement blocks), need iron sheets for classrooms",
+                        "google_maps": "https://maps.app.goo.gl/44rQi7R9jyA8fk1P6?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.912222, -11.025556]
+                    },
+                    "properties": {
+                        "name": "Mdimwa Model ECD",
+                        "epa": "Mhuju",
+                        "status": "Completed",
+                        "completed_latrines": true,
+                        "classrooms": "Well-constructed and completed",
+                        "water_source": "Water tab available (damaged, wasting water)",
+                        "garden": "Kitchen and eating area available",
+                        "playground": "Playing materials available but not placed",
+                        "issues": "Need support with cement for playground, tap damaged",
+                        "google_maps": "https://maps.app.goo.gl/?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.9902146, -10.8795343]
+                    },
+                    "properties": {
+                        "name": "Luchinda ECD",
+                        "epa": "Mhuju",
+                        "status": "Incomplete",
+                        "completed_latrines": "Partial (children's only)",
+                        "classrooms": "Borrowed iron sheets for roofing",
+                        "water_source": "Not specified",
+                        "garden": "Not specified",
+                        "playground": "Not specified",
+                        "issues": "Care givers/teachers' toilets not completed, need planks, wires, nails",
+                        "google_maps": "https://maps.google.com?q=-10.8795343,33.9902146&entry=gps&lucs=,94284463,94224825,94227247,94227248,94231188,47071704,47069508,94218641,94282134,94203019,47084304&g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.798611, -10.945833]
+                    },
+                    "properties": {
+                        "name": "Kahurwa ECD",
+                        "epa": "Mhuju",
+                        "status": "Partially Completed",
+                        "completed_latrines": true,
+                        "classrooms": "Supported with timber, iron sheets and cement",
+                        "water_source": "No water source now",
+                        "garden": "No ECD gardens available",
+                        "playground": "Not specified",
+                        "issues": "No water source, no gardens",
+                        "google_maps": "https://maps.app.goo.gl/ew7UD4yAFSxGKbjPA?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.874167, -10.918056]
+                    },
+                    "properties": {
+                        "name": "Lukontha CBCC",
+                        "epa": "Mhuju",
+                        "status": "Incomplete",
+                        "completed_latrines": true,
+                        "classrooms": "Two classrooms made by community (grass roof, weak status)",
+                        "water_source": "Not specified",
+                        "garden": "No ECD garden, incubator farm nearby",
+                        "playground": "One swing provided",
+                        "issues": "Classrooms in poor condition, no garden",
+                        "google_maps": "https://maps.app.goo.gl/SeBmU4pwUpCUQBUC9?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.931111, -10.896389]
+                    },
+                    "properties": {
+                        "name": "St Martin's Model ECD",
+                        "epa": "Nchenachena",
+                        "status": "Nearly Completed",
+                        "completed_latrines": true,
+                        "classrooms": "Three classrooms completed",
+                        "water_source": "Water tap available (intermittent)",
+                        "garden": "Not set up yet",
+                        "playground": "Not set up yet",
+                        "issues": "Garden and playground not set up, water intermittent",
+                        "google_maps": "https://maps.app.goo.gl/xW57iwVTvd6jJKEV7?g_st=ipc"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [33.845833, -10.967222]
+                    },
+                    "properties": {
+                        "name": "Kachika ECD",
+                        "epa": "Mhuju",
+                        "status": "Partially Completed",
+                        "completed_latrines": "Completed but holes not open",
+                        "classrooms": "Community building, project supported planks and iron sheets",
+                        "water_source": "Tap water available",
+                        "garden": "Garden not used",
+                        "playground": "Not specified",
+                        "issues": "Toilet holes not open, garden not used",
+                        "google_maps": "https://maps.app.goo.gl/u6d1vepeW9zKYZBW6?g_st=ipc"
+                    }
+                }
+            ]
+        };
+
+       // Define custom icons
+        const lat_icons = {
+            "Completed": L.icon({
+                iconUrl: 'icons/green.png',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -25]
+            }),
+            "Nearly Completed": L.icon({
+                iconUrl: 'icons/green.png',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -25]
+            }),
+            "Partially Completed": L.icon({
+                iconUrl: 'icons/yellow.png',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -25]
+            }),
+            "Incomplete": L.icon({
+                iconUrl: 'icons/red-building.png',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -25]
+            })
+        }
+
+        // Function to get icon based on status
+        function getStatusIcon(status) {
+            return lat_icons[status] || lat_icons["Incomplete"];
+        }
+
+        // Function to get color based on status
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Completed':
+                    return '#27ae60';
+                case 'Nearly Completed':
+                    return '#2ecc71';
+                case 'Partially Completed':
+                    return '#f39c12';
+                case 'Incomplete':
+                    return '#e74c3c';
+                default:
+                    return '#95a5a6';
+            }
+        }
+
+        // Function to get status class for styling
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Completed':
+                    return 'status-completed';
+                case 'Nearly Completed':
+                    return 'status-completed';
+                case 'Partially Completed':
+                    return 'status-partial';
+                case 'Incomplete':
+                    return 'status-incomplete';
+                default:
+                    return '';
+            }
+        }
+
+        // Function to create popup content
+        function createPopupContent(properties) {
+            return `
+                <div class="popup-content">
+                    <div class="popup-title">${properties.name}</div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">EPA:</span> ${properties.epa}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Status:</span> 
+                        <span class="${getStatusClass(properties.status)}">${properties.status}</span>
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Latrines:</span> 
+                        ${properties.completed_latrines === true ? 'Completed' : 
+                          properties.completed_latrines === false ? 'Not Completed' : 
+                          properties.completed_latrines}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Classrooms:</span> ${properties.classrooms}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Water Source:</span> ${properties.water_source}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Garden:</span> ${properties.garden}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Playground:</span> ${properties.playground}
+                    </div>
+                    
+                    <div class="popup-section">
+                        <span class="popup-label">Issues:</span> ${properties.issues}
+                    </div>
+                    
+                    ${properties.google_maps ? `
+                    <div class="popup-section">
+                        <a href="${properties.google_maps}" target="_blank" style="color: #3498db; text-decoration: none;">
+                            📍 View on Google Maps
+                        </a>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Add GeoJSON to map
+        L.geoJSON(ecdData, {
+            pointToLayer: function(feature, latlng) {
+                return L.marker(latlng, {
+                    icon: getStatusIcon(feature.properties.status)
+                });
+            },
+            onEachFeature: function(feature, layer) {
+                // Bind popup
+                layer.bindPopup(createPopupContent(feature.properties));
+                
+                // Add click event to open popup
+                layer.on('click', function() {
+                    layer.openPopup();
+                });
+            }
+        }).addTo(map);
+
+        // Fit map to show all markers
+        //map.fitBounds(L.geoJSON(ecdData).getBounds().pad(0.1));
+
+
+
+//Legend
+        const legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function(map) {
+            // Create a wrapper div for the entire legend (collapsible)
+            const div = L.DomUtil.create('div', 'info legend');
+            
+            // Add toggle button
+            div.innerHTML = `
+                <button id="toggleLegendBtn" class="btn btn-light btn-sm shadow-sm" style="width:100%;">
+                    <i class="fas fa-list"></i> Legend
+                </button>
+                <div id="legendContent" style="display:none; margin-top:5px;">
+                    <h6><b>Intervention Types</b></h6>
+                </div>
+            `;
+            
+            // Create container for legend items
+            const contentDiv = document.createElement('div');
+            
+            // Add Office legend item
+            contentDiv.innerHTML += `
+                <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <img src="${officeIcon.options.iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="Office">
+                    <span style="font-size: 12px;">Office</span>
+                </div>
+            `;
+
+            // Add Latrine legend item
+            //contentDiv.innerHTML += `
+            //    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+            //        <img src="${lat_icons.options.iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="Office">
+            //        <span style="font-size: 12px;">Office</span>
+            //    </div>
+            //`;
+            
+            // Add other intervention type legend items
+            Object.keys(icons).forEach(interv_Type => {
+                const iconUrl = icons[interv_Type].options.iconUrl;
+                contentDiv.innerHTML += `
+                    <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <img src="${iconUrl}" style="width: 20px; height: 20px; margin-right: 8px;" alt="${interv_Type}">
+                        <span style="font-size: 12px;">${interv_Type}</span>
+                    </div>
+                `;
+            });
+
+            // Append items to legend content
+            div.querySelector('#legendContent').appendChild(contentDiv);
+
+            // Prevent map drag when clicking inside legend
+            L.DomEvent.disableClickPropagation(div);
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        // Toggle legend visibility
+        document.addEventListener("click", function(e) {
+            if (e.target && e.target.id === "toggleLegendBtn") {
+                const legendContent = document.getElementById("legendContent");
+                if (legendContent.style.display === "none") {
+                    legendContent.style.display = "block";
+                } else {
+                    legendContent.style.display = "none";
+                }
+            }
+        });
+
