@@ -1100,7 +1100,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                 popupAnchor: [0, -25]
             }),
             "Nearly Completed": L.icon({
-                iconUrl: 'icons/green.png',
+                iconUrl: 'icons/blue.png',
                 iconSize: [28, 28],
                 iconAnchor: [14, 28],
                 popupAnchor: [0, -25]
