@@ -946,7 +946,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [34.035195, -10.754536]
                     },
                     "properties": {
-                        "name": "Ntchenachena CBCC",
+                        "name": "Ntchenachena CBCC latrines",
                         "epa": "Nchenachena",
                         "status": "Incomplete",
                         "completed_latrines": true,
@@ -965,7 +965,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.856389, -10.983611]
                     },
                     "properties": {
-                        "name": "Chawayi ECD",
+                        "name": "Chawayi ECD latrines",
                         "epa": "Nchenachena",
                         "status": "Incomplete",
                         "completed_latrines": true,
@@ -984,7 +984,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.912222, -11.025556]
                     },
                     "properties": {
-                        "name": "Mdimwa Model ECD",
+                        "name": "Mdimwa Model ECD latrines",
                         "epa": "Mhuju",
                         "status": "Completed",
                         "completed_latrines": true,
@@ -1003,7 +1003,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.9902146, -10.8795343]
                     },
                     "properties": {
-                        "name": "Luchinda ECD",
+                        "name": "Luchinda ECD latrines",
                         "epa": "Mhuju",
                         "status": "Incomplete",
                         "completed_latrines": "Partial (children's only)",
@@ -1022,7 +1022,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.798611, -10.945833]
                     },
                     "properties": {
-                        "name": "Kahurwa ECD",
+                        "name": "Kahurwa ECD latrines",
                         "epa": "Mhuju",
                         "status": "Partially Completed",
                         "completed_latrines": true,
@@ -1041,7 +1041,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.874167, -10.918056]
                     },
                     "properties": {
-                        "name": "Lukontha CBCC",
+                        "name": "Lukontha CBCC latrines",
                         "epa": "Mhuju",
                         "status": "Incomplete",
                         "completed_latrines": true,
@@ -1060,7 +1060,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.931111, -10.896389]
                     },
                     "properties": {
-                        "name": "St Martin's Model ECD",
+                        "name": "St Martin's Model ECD latrines",
                         "epa": "Nchenachena",
                         "status": "Nearly Completed",
                         "completed_latrines": true,
@@ -1079,7 +1079,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         "coordinates": [33.845833, -10.967222]
                     },
                     "properties": {
-                        "name": "Kachika ECD",
+                        "name": "Kachika ECD latrines",
                         "epa": "Mhuju",
                         "status": "Partially Completed",
                         "completed_latrines": "Completed but holes not open",
