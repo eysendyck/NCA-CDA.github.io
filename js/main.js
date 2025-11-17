@@ -1103,19 +1103,19 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                 popupAnchor: [0, -25]
             }),
             "Nearly Completed": L.icon({
-                iconUrl: 'icons/blue.png',
+                iconUrl: 'icons/green.png',
                 iconSize: [28, 28],
                 iconAnchor: [14, 28],
                 popupAnchor: [0, -25]
             }),
             "Partially Completed": L.icon({
-                iconUrl: 'icons/yellow.png',
+                iconUrl: 'icons/green.png',
                 iconSize: [28, 28],
                 iconAnchor: [14, 28],
                 popupAnchor: [0, -25]
             }),
             "Incomplete": L.icon({
-                iconUrl: 'icons/red-building.png',
+                iconUrl: 'icons/green.png',
                 iconSize: [28, 28],
                 iconAnchor: [14, 28],
                 popupAnchor: [0, -25]
@@ -1159,6 +1159,8 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
             }
         }
 
+        //${getStatusClass(properties.status)}">${properties.status}
+
         // Function to create popup content
         function createPopupContent(properties) {
             return `
@@ -1171,7 +1173,6 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                     
                     <div class="popup-section">
                         <span class="popup-label">Status:</span> 
-                        <span class="${getStatusClass(properties.status)}">${properties.status}</span>
                     </div>
                     
                     <div class="popup-section">
