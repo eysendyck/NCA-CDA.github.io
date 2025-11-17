@@ -439,6 +439,12 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
         iconSize: [28, 28],
         iconAnchor: [14, 28],
         popupAnchor: [0, -25]
+      }),
+      "Other (specify)": L.icon({
+        iconUrl: 'icons/default.png',
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -25]
       })
     };
     
