@@ -1166,15 +1166,9 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
             return `
                 <div class="popup-content">
                     <div class="popup-title">${properties.name}</div>
-                    
                     <div class="popup-section">
                         <span class="popup-label">EPA:</span> ${properties.epa}
                     </div>
-                    
-                    <div class="popup-section">
-                        <span class="popup-label">Status:</span> 
-                    </div>
-                    
                     <div class="popup-section">
                         <span class="popup-label">Latrines:</span> 
                         ${properties.completed_latrines === true ? 'Completed' : 
