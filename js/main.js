@@ -439,13 +439,14 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
         iconSize: [28, 28],
         iconAnchor: [14, 28],
         popupAnchor: [0, -25]
-      }),
-      "Other (specify)": L.icon({
-        iconUrl: 'icons/default.png',
-        iconSize: [28, 28],
-        iconAnchor: [14, 28],
-        popupAnchor: [0, -25]
       })
+      //,
+      //"Other (specify)": L.icon({
+      //  iconUrl: 'icons/default.png',
+      //  iconSize: [28, 28],
+      //  iconAnchor: [14, 28],
+      //  popupAnchor: [0, -25]
+      //})
     };
     
     // Routing variables
@@ -489,7 +490,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
         L.geoJSON(geoJsonData, {
             pointToLayer: function(feature, latlng) {
                 const interv_Type = feature.properties.TRANSFORM_;
-                const icon = icons[interv_Type] || icons["Other (specify)"]; // Default to Other (specify) icon
+                const icon = icons[interv_Type] || "Other (specify)"; // Default to Other (specify) icon
                 // Create layer group for this transport type if it doesn't exist
                 if (!interventionLayers[interv_Type]) {
                     interventionLayers[interv_Type] = L.layerGroup();
