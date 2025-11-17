@@ -490,6 +490,7 @@ document.getElementById("toggleSearchBtn").addEventListener("click", function() 
                         <h5>${feature.properties.TRANSFORM_}</h5>
                         <p><strong>District:</strong> ${feature.properties.District}</p>
                         <p><strong>Organisation:</strong> ${feature.properties.Organisati.toUpperCase()}</p>
+                        <p><strong>Section:</strong> ${feature.properties.Section}</p>
                         <p><strong>EPA:</strong> ${feature.properties.EPA4}</p>
                         <p><strong>Village:</strong> ${feature.properties.Village}</p>
                         <p><strong>GVH:</strong> ${feature.properties.GVH}</p>
